@@ -1,11 +1,11 @@
 package com.cess.gargotte.log;
 
-import com.cess.gargotte.core.model.sales.ISale;
+import com.cess.gargotte.core.model.sales.SaleBuilder;
 
 /**
  * Created by Guillaume on 19/02/2017.
  */
 public interface ILogger {
 
-    public boolean log(ISale isd);
+    public boolean log(SaleBuilder builder);
 }
