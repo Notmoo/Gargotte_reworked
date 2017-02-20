@@ -36,4 +36,19 @@ public class SimpleProduct implements IProduct {
     public String getCat() {
         return category;
     }
+
+    public void applySale(int amount) {
+        removeAmount(amount);
+        this.amountSold+=amount;
+    }
+
+    public void removeAmount(int amount) {
+        this.amountRemaining-=amount;
+        if(amountRemaining<0)
+            throw new IllegalStateException();
+    }
+
+    public void addAmount(int amount) {
+        this.amountRemaining+=amount;
+    }
 }

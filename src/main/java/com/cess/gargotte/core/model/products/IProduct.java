@@ -10,4 +10,8 @@ public interface IProduct {
     public int getAmountSold();
     public int getAmountRemaining();
     public String getCat();
+
+    public void applySale(int amount);
+    public void removeAmount(int amount);
+    public void addAmount(int amount);
 }
