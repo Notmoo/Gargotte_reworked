@@ -17,4 +17,8 @@ public class Order {
             this.sales.addAll(sales);
         }
     }
+
+    public List<Sale> getSales() {
+        return sales;
+    }
 }
