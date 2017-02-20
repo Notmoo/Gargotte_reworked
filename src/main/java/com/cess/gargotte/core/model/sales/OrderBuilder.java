@@ -2,17 +2,19 @@ package com.cess.gargotte.core.model.sales;
 
 import com.cess.gargotte.core.model.products.IProduct;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
  * Created by Guillaume on 19/02/2017.
  */
-public class SaleBuilder {
+public class OrderBuilder {
 
     Map<IProduct, Integer> content;
 
-    SaleBuilder(){
+    OrderBuilder(){
         content = new HashMap<IProduct, Integer>();
     }
 
@@ -32,5 +34,13 @@ public class SaleBuilder {
                 this.content.put(product, this.content.get(product)-1);
             }
         }
+    }
+
+    public Order build(){
+        List<Sale> sales = new ArrayList<Sale>();
+        for(IProduct product : content.keySet()){
+            sales.add(new Sale(product, this.content.get(product)));
+        }
+        return new Order(sales);
     }
 }
