@@ -43,7 +43,7 @@ public class ProductBuffer {
         return false;
     }
 
-    public Order flush(){
+    public Order makeOrder(){
         List<Sale> sales = new ArrayList<Sale>();
         for(IProduct product : content.keySet()){
             sales.add(new Sale(product, this.content.get(product)));
