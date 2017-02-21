@@ -21,10 +21,10 @@ public class SimpleLogger implements ILogger{
     }
 
     public boolean log(Order order) {
-        boolean success = false;
+        boolean success;
         try (FileWriter fw = new FileWriter(path.toString(), true);
-                 BufferedWriter bw = new BufferedWriter(fw);
-                 PrintWriter out = new PrintWriter(bw)) {
+                BufferedWriter bw = new BufferedWriter(fw);
+                PrintWriter out = new PrintWriter(bw)) {
                 StringBuffer sb = new StringBuffer();
 
                 for(Sale sale : order.getSales()) {
