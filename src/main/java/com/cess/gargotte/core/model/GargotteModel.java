@@ -29,22 +29,31 @@ public class GargotteModel {
     private ILogger logger;
     private ProductBuffer productBuffer;
     private List<IProduct> products;
-    private IModelFirerer firerer;
+
+    private IModelFirerer dataEventFirerer;
+    private IModelFirerer modelStateFirerer;
 
 
     public GargotteModel(){
         ioHandler = new SerIOHandler();
         logger = new SimpleLogger();
-        products =  ioHandler.read();
-        firerer = new ModelFirerer();
         productBuffer = new ProductBuffer();
+
+        initProductList();
+
+        dataEventFirerer = new ModelFirerer();
+        modelStateFirerer = new ModelFirerer();
     }
 
-    public List<IProduct> getProducts() {
+    private void initProductList() {
+        products = ioHandler.read();
+    }
+
+    public List<IProduct> getProductsFromCat() {
         return products;
     }
 
-    public List<IProduct> getProducts(final String cat){
+    public List<IProduct> getProductsFromCat(final String cat){
         final List<IProduct> reply = new ArrayList<IProduct>();
         this.products.stream().filter(new Predicate<IProduct>(){
             public boolean test(IProduct product){
@@ -56,6 +65,10 @@ public class GargotteModel {
             }
         });
         return reply;
+    }
+
+    public Order getCurrentOrder(){
+        return this.productBuffer.makeOrder();
     }
 
     public List<String> getCatList(){
@@ -77,7 +90,7 @@ public class GargotteModel {
     }
 
     public boolean flushBufferedSales(){
-       Order order = this.productBuffer.flush();
+       Order order = this.productBuffer.makeOrder();
        this.productBuffer = new ProductBuffer();
 
        this.logger.log(order);
