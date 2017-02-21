@@ -3,6 +3,7 @@ package com.cess.gargotte.reader;
 import com.cess.gargotte.core.model.products.IProduct;
 
 import java.io.*;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,33 +21,27 @@ public class SerIOHandler implements IIOHandler{
 
     public List<IProduct> read() {
         List<IProduct> products = new ArrayList<IProduct>();
-        ObjectInputStream ois = null;
-        try {
-            final FileInputStream fichier = new FileInputStream(path.toFile());
-            ois = new ObjectInputStream(fichier);
+        try ( final FileInputStream fichier = new FileInputStream(path.toFile());
+              ObjectInputStream ois = new ObjectInputStream(fichier)){
 
             Object obj;
-            try {
-                while ((obj = ois.readObject()) != null) {
-                    if (obj instanceof IProduct) {
-                        products.add((IProduct) obj);
-                    }
-                }
-            }catch(EOFException e){
-                //Fin du fichier
-                //Ce n'est pas un cas d'erreur
+            while ((obj = ois.readObject()) != null) {
+               if (obj instanceof IProduct) {
+                  products.add((IProduct) obj);
+               }
             }
-
+        }catch(EOFException e){
+            //Fin du fichier
+            //Ce n'est pas un cas d'erreur
+        }catch(FileNotFoundException e){
+            try{
+                Files.createFile(path );
+                return read();
+            }catch(IOException ioe){
+                e.printStackTrace();
+            }
         } catch (final java.io.IOException | ClassNotFoundException e) {
             e.printStackTrace();
-        } finally {
-            try {
-                if (ois != null) {
-                    ois.close();
-                }
-            } catch (final IOException ex) {
-                ex.printStackTrace();
-            }
         }
         return products;
     }
