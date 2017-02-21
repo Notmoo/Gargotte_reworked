@@ -1,9 +1,12 @@
 package com.cess.gargotte.core.model.products;
 
+import java.io.Serializable;
+import java.util.List;
+
 /**
  * Created by Guillaume on 15/02/2017.
  */
-public interface IProduct {
+public interface IProduct extends Serializable{
 
     public String getName();
     public double getPrice();
@@ -14,4 +17,6 @@ public interface IProduct {
     public void applySale(int amount);
     public void removeAmount(int amount);
     public void addAmount(int amount);
+
+    public String getRepresentation(int level);
 }

@@ -8,6 +8,8 @@ import java.util.List;
  */
 public class ComposedProduct implements IProduct {
 
+    private static final long serialVersionUID = 1L;
+
     private final String name;
     private final double price;
     private int amountSold;
@@ -70,5 +72,26 @@ public class ComposedProduct implements IProduct {
         for(IProduct component : components){
             component.addAmount(amount);
         }
+    }
+
+    public String getRepresentation(int level){
+        StringBuffer sb = new StringBuffer();
+        for(int i =0; i<level;i++){
+            sb.append("\t");
+        }
+
+        sb.append(name).append("\t");
+        sb.append("Menu").append("\t");
+        sb.append(price).append("\t");
+        sb.append(this.getAmountRemaining()).append("\t");
+        sb.append(amountSold);
+
+        if(components.size()>0) {
+            sb.append("\n");
+            for (IProduct component : components) {
+                sb.append(component.getRepresentation(level + 1)).append("\n");
+            }
+        }
+        return sb.toString();
     }
 }
