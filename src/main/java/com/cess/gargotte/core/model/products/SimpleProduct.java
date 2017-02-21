@@ -5,6 +5,8 @@ package com.cess.gargotte.core.model.products;
  */
 public class SimpleProduct implements IProduct {
 
+    private static final long serialVersionUID = 1L;
+
     private final String name, category;
     private final double price;
     private int amountRemaining, amountSold;
@@ -50,5 +52,20 @@ public class SimpleProduct implements IProduct {
 
     public void addAmount(int amount) {
         this.amountRemaining+=amount;
+    }
+
+    public String getRepresentation(int level){
+        StringBuffer sb = new StringBuffer();
+        for(int i =0; i<level;i++){
+            sb.append("\t");
+        }
+
+        sb.append(name).append("\t");
+        sb.append(category).append("\t");
+        sb.append(price).append("\t");
+        sb.append(amountRemaining).append("\t");
+        sb.append(amountSold);
+
+        return sb.toString();
     }
 }
