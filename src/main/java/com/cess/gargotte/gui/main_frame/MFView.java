@@ -19,6 +19,7 @@ public class MFView {
         this.ctrl = ctrl;
         this.mainPane = new BorderPane();
         this.tabPane = new TabPane();
+        tabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         mainPane.setCenter(tabPane);
     }
     
@@ -27,8 +28,6 @@ public class MFView {
     }
     
     public void addModule(String name, Pane content){
-        Tab tab = new Tab(name);
-        tab.setContent(content);
-        this.tabPane.getTabs().add(tab);
+        this.tabPane.getTabs().add(new Tab(name, content));
     }
 }
