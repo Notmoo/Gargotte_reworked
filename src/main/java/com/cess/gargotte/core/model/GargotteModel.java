@@ -94,15 +94,22 @@ public class GargotteModel {
        this.productBuffer = new ProductBuffer();
 
        this.logger.log(order);
-       //TODO Apply sur une copie, puis replacer la liste initiale (sécurité)
        this.apply(order);
        this.ioHandler.write(this.products);
        return true;
     }
 
     private void apply(Order order){
-        for(Sale sale : order.getSales()){
-            this.products.get(this.products.indexOf(sale.getProduct())).applySale(sale.getAmount());
+        try {
+            for (Sale sale : order.getSales()) {
+                this.products.get(this.products.indexOf(sale.getProduct())).applySale(sale.getAmount());
+            }
+        }catch(IllegalStateException e){
+            //En cas d'erreur, on regénère la liste des produits à partir du fichier de sauvegarde.
+            this.initProductList();
+            this.modelStateFirerer.fireErrorEvent(e);
+        }finally{
+            this.dataEventFirerer.fireDataChangedEvent();
         }
     }
 }
