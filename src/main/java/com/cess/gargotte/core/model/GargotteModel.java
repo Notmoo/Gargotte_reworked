@@ -1,6 +1,7 @@
 package com.cess.gargotte.core.model;
 
 import com.cess.gargotte.core.model.listeners.IModelFirerer;
+import com.cess.gargotte.core.model.listeners.IModelListener;
 import com.cess.gargotte.core.model.listeners.ModelFirerer;
 import com.cess.gargotte.core.model.products.IProduct;
 import com.cess.gargotte.core.model.sales.Order;
@@ -111,5 +112,21 @@ public class GargotteModel {
         }finally{
             this.dataEventFirerer.fireDataChangedEvent();
         }
+    }
+
+    public void addDataListener(IModelListener l){
+        this.dataEventFirerer.addListener(l);
+    }
+
+    public void removeDataListener(IModelListener l){
+        this.dataEventFirerer.removeListener(l);
+    }
+
+    public void addStateListener(IModelListener l){
+        this.modelStateFirerer.addListener(l);
+    }
+
+    public void removeStateListener(IModelListener l){
+        this.modelStateFirerer.removeListener(l);
     }
 }
