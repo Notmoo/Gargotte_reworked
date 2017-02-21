@@ -7,8 +7,9 @@ import com.cess.gargotte.core.model.products.IProduct;
 import com.cess.gargotte.core.model.sales.Order;
 import com.cess.gargotte.core.model.sales.ProductBuffer;
 import com.cess.gargotte.core.model.sales.Sale;
-import com.cess.gargotte.log.ILogger;
-import com.cess.gargotte.log.SimpleLogger;
+import com.cess.gargotte.log.IOrderLogger;
+import com.cess.gargotte.log.SaleLogSyntaxFactory;
+import com.cess.gargotte.log.SimpleOrderLogger;
 import com.cess.gargotte.reader.IIOHandler;
 import com.cess.gargotte.reader.SerIOHandler;
 
@@ -24,10 +25,10 @@ import java.util.function.Predicate;
  */
 public class GargotteModel {
 
-    private static final Path PATH = Paths.get("produits.gargotte");
+    private static final Path PRODUCT_FILE_PATH = Paths.get("produits.gargotte"), SALES_LOG_FILE_PATH = Paths.get("ventes.log");
 
     private IIOHandler ioHandler;
-    private ILogger logger;
+    private IOrderLogger logger;
     private ProductBuffer productBuffer;
     private List<IProduct> products;
 
@@ -36,8 +37,8 @@ public class GargotteModel {
 
 
     public GargotteModel(){
-        ioHandler = new SerIOHandler(PATH);
-        logger = new SimpleLogger();
+        ioHandler = new SerIOHandler(PRODUCT_FILE_PATH);
+        logger = new SimpleOrderLogger(SALES_LOG_FILE_PATH, new SaleLogSyntaxFactory());
         productBuffer = new ProductBuffer();
 
         initProductList();
