@@ -24,7 +24,7 @@ import java.util.function.Predicate;
  */
 public class GargotteModel {
 
-    private static final Path path = Paths.get("taverne.gardata");
+    private static final Path PATH = Paths.get("produits.gargotte.xml");
 
     private IIOHandler ioHandler;
     private ILogger logger;
@@ -36,7 +36,7 @@ public class GargotteModel {
 
 
     public GargotteModel(){
-        ioHandler = new SerIOHandler();
+        ioHandler = new SerIOHandler(PATH);
         logger = new SimpleLogger();
         productBuffer = new ProductBuffer();
 
