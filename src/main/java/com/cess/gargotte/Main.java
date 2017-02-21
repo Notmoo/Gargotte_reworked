@@ -19,16 +19,4 @@ public class Main {
     public static final void main(String[] args){
         GargotteModel model = new GargotteModel();
     }
-
-    /**
-     * Méthode destiné au test du programme
-     * TODO à retirer
-     * @param products
-     */
-    private static void printProducts(List<IProduct> products){
-        System.out.println("------------------------------------------");
-        for(IProduct product : products){
-            System.out.println(product.getRepresentation(0));
-        }
-    }
 }
