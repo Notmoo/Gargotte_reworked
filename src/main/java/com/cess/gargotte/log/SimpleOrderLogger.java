@@ -10,12 +10,12 @@ import java.nio.file.Path;
 /**
  * Created by Guillaume on 19/02/2017.
  */
-public class SimpleLogger implements ILogger{
+public class SimpleOrderLogger implements IOrderLogger {
 
     private final Path path;
     private final ISaleLogSyntax syntax;
 
-    public SimpleLogger(Path path, SaleLogSyntaxFactory syntaxFactory){
+    public SimpleOrderLogger (Path path, SaleLogSyntaxFactory syntaxFactory){
         this.path = path;
         this.syntax = syntaxFactory.newInlineSimpleSyntax();
     }
