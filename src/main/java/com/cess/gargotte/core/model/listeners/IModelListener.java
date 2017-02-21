@@ -7,4 +7,5 @@ import java.util.EventListener;
  */
 public interface IModelListener extends EventListener{
     public void onDataChangedEvent();
+    public void onErrorEvent(Throwable e);
 }

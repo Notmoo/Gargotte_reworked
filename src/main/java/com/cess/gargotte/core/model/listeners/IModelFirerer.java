@@ -8,4 +8,5 @@ public interface IModelFirerer {
     public void addListener(IModelListener l);
     public void removeListener(IModelListener l);
     public void fireDataChangedEvent();
+    public void fireErrorEvent(Throwable e);
 }
