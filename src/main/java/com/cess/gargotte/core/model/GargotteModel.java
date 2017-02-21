@@ -24,7 +24,7 @@ import java.util.function.Predicate;
  */
 public class GargotteModel {
 
-    private static final Path PATH = Paths.get("produits.gargotte.xml");
+    private static final Path PATH = Paths.get("produits.gargotte");
 
     private IIOHandler ioHandler;
     private ILogger logger;
