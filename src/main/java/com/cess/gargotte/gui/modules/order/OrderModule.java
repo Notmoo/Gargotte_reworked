@@ -31,6 +31,15 @@ public class OrderModule implements IModule {
     
             @Override
             public void onErrorEvent (Throwable e) {
+            }
+        });
+        model.addStateListener(new IModelListener( ) {
+            @Override
+            public void onDataChangedEvent ( ) {
+            }
+    
+            @Override
+            public void onErrorEvent (Throwable e) {
                 OrderModule.this.ctrl.onErrorEvent(e);
             }
         });
