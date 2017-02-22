@@ -55,7 +55,7 @@ public class GargotteModel {
         products = ioHandler.read();
     }
 
-    public List<IProduct> getProductsFromCat() {
+    public List<IProduct> getProducts() {
         return products;
     }
 
@@ -88,11 +88,19 @@ public class GargotteModel {
     }
 
     public boolean bufferSale(IProduct product){
-        return productBuffer.addProduct(product);
+        boolean reply = productBuffer.addProduct(product);
+        if(reply){
+            this.dataEventFirerer.fireDataChangedEvent();
+        }
+        return reply;
     }
 
     public boolean unbufferSale(IProduct product){
-       return productBuffer.removeProduct(product);
+        boolean reply = productBuffer.removeProduct(product);
+        if(reply){
+            this.dataEventFirerer.fireDataChangedEvent();
+        }
+        return reply;
     }
 
     public boolean setPaymentMethod(PaymentMethod pm){
@@ -102,12 +110,15 @@ public class GargotteModel {
     
     public boolean flushBufferedSales(){
        Order order = this.productBuffer.makeOrder(paymentMethod);
+
+       this.apply(order);
+       this.logger.log(order);
+    
        this.productBuffer = new ProductBuffer();
        paymentMethod = null;
-
-       this.logger.log(order);
-       this.apply(order);
+        
        this.ioHandler.write(this.products);
+       this.dataEventFirerer.fireDataChangedEvent();
        return true;
     }
 
@@ -139,5 +150,9 @@ public class GargotteModel {
 
     public void removeStateListener(IModelListener l){
         this.modelStateFirerer.removeListener(l);
+    }
+    
+    public PaymentMethod getPaymentMethod ( ) {
+        return paymentMethod;
     }
 }
