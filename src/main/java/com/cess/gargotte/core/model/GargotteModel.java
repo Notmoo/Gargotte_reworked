@@ -95,22 +95,24 @@ public class GargotteModel {
         return reply;
     }
 
-    public boolean setPaymentMethod(PaymentMethod pm){
+    public boolean setPaymentMethod(PaymentMethod paymentMethod){
         this.paymentMethod = paymentMethod;
         return true;
     }
     
     public boolean flushBufferedSales(){
        Order order = this.productBuffer.makeOrder(paymentMethod);
-
-       this.apply(order);
-       this.logger.log(order);
+       
+       if(order.getSales().size()>0) {
+           this.apply(order);
+           this.logger.log(order);
     
-       this.productBuffer = new ProductBuffer();
-       paymentMethod = null;
-        
-       this.ioHandler.write(this.products);
-       this.dataEventFirerer.fireDataChangedEvent();
+           this.productBuffer = new ProductBuffer( );
+           paymentMethod = null;
+    
+           this.ioHandler.write(this.products);
+           this.dataEventFirerer.fireDataChangedEvent( );
+       }
        return true;
     }
 
