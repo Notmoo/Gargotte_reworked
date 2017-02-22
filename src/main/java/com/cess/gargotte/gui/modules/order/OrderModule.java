@@ -1,6 +1,7 @@
 package com.cess.gargotte.gui.modules.order;
 
 import com.cess.gargotte.core.model.GargotteModel;
+import com.cess.gargotte.core.model.IModel;
 import com.cess.gargotte.core.model.listeners.IModelListener;
 import com.cess.gargotte.gui.modules.IModule;
 import com.cess.gargotte.gui.modules.order.ctrl.OrderModuleCtrl;
@@ -16,7 +17,7 @@ public class OrderModule implements IModule {
     private final OrderModuleCtrl ctrl;
     private final OrderModuleView view;
     
-    public OrderModule(GargotteModel model){
+    public OrderModule(IModel model){
         this.name = "Caisse";
         this.ctrl = new OrderModuleCtrl(model);
         this.view = new OrderModuleView(ctrl);

@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 /**
  * Created by Guillaume on 19/02/2017.
  */
-public class GargotteModel {
+public class GargotteModel implements IModel{
 
     private static final Path PRODUCT_FILE_PATH = Paths.get("produits.gargotte"), SALES_LOG_FILE_PATH = Paths.get("ventes.log");
 

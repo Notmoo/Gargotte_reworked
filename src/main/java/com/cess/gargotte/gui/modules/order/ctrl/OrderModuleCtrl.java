@@ -1,6 +1,6 @@
 package com.cess.gargotte.gui.modules.order.ctrl;
 
-import com.cess.gargotte.core.model.GargotteModel;
+import com.cess.gargotte.core.model.IModel;
 import com.cess.gargotte.core.model.products.IProduct;
 import com.cess.gargotte.core.model.sales.PaymentMethod;
 import com.cess.gargotte.core.model.sales.Sale;
@@ -15,10 +15,10 @@ import java.util.List;
  */
 public class OrderModuleCtrl {
     
-    private final GargotteModel model;
+    private final IModel model;
     private OrderModuleView view;
     
-    public OrderModuleCtrl (GargotteModel model) {
+    public OrderModuleCtrl (IModel model) {
         if(model == null){
             throw new NullPointerException();
         }
