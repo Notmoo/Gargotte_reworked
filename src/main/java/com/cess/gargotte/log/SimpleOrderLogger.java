@@ -28,7 +28,7 @@ public class SimpleOrderLogger implements IOrderLogger {
                 StringBuffer sb = new StringBuffer();
 
                 for(Sale sale : order.getSales()) {
-                    sb.append(syntax.applySyntax(sale)).append("\n");
+                    sb.append(syntax.applySyntax(sale, order.getPaymentMethod())).append("\n");
                 }
 
                 out.append(sb.toString());

@@ -19,10 +19,10 @@ public class SaleLogSyntaxFactory {
     }
     
     public ISaleLogSyntax newInlineSimpleSyntax(){
-        return (sale)->{
+        return (sale, pm)->{
             StringBuffer sb = new StringBuffer();
 
-            sb.append(dateFormat.format(DATE)).append("\t").append(sale.getProduct().getName()).append("\t").append(sale.getAmount()).append("\t").append(sale.getProduct().getPrice()*sale.getAmount());
+            sb.append(dateFormat.format(DATE)).append("\t").append(sale.getProduct().getName()).append("\t").append(sale.getAmount()).append("\t").append(sale.getProduct().getPrice()*sale.getAmount()).append("\t").append(pm);
 
             return sb.toString();
         };

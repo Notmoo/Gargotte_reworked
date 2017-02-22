@@ -5,6 +5,7 @@ import com.cess.gargotte.core.model.listeners.IModelListener;
 import com.cess.gargotte.core.model.listeners.ModelFirerer;
 import com.cess.gargotte.core.model.products.IProduct;
 import com.cess.gargotte.core.model.sales.Order;
+import com.cess.gargotte.core.model.sales.PaymentMethod;
 import com.cess.gargotte.core.model.sales.ProductBuffer;
 import com.cess.gargotte.core.model.sales.Sale;
 import com.cess.gargotte.log.IOrderLogger;
@@ -29,8 +30,11 @@ public class GargotteModel {
 
     private IIOHandler ioHandler;
     private IOrderLogger logger;
-    private ProductBuffer productBuffer;
+    
     private List<IProduct> products;
+    
+    private PaymentMethod paymentMethod;
+    private ProductBuffer productBuffer;
 
     private IModelFirerer dataEventFirerer;
     private IModelFirerer modelStateFirerer;
@@ -51,21 +55,13 @@ public class GargotteModel {
         products = ioHandler.read();
     }
 
-    public List<IProduct> getProductsFromCat() {
+    public List<IProduct> getProducts() {
         return products;
     }
 
     public List<IProduct> getProductsFromCat(final String cat){
-        final List<IProduct> reply = new ArrayList<IProduct>();
-        this.products.stream().filter(new Predicate<IProduct>(){
-            public boolean test(IProduct product){
-                return product.getCat().equals(cat);
-            }
-        }).forEach(new Consumer<IProduct>() {
-            public void accept(IProduct product) {
-                reply.add(product);
-            }
-        });
+        final List<IProduct> reply = new ArrayList<>();
+        this.products.stream().filter((product)-> product.getCat().equals(cat)).forEach((product)-> reply.add(product));
         return reply;
     }
 
@@ -74,7 +70,7 @@ public class GargotteModel {
     }
 
     public List<String> getCatList(){
-        final List<String> reply = new ArrayList<String>();
+        final List<String> reply = new ArrayList<>();
         for(IProduct product : this.products){
             if(!reply.contains(product.getCat())){
                 reply.add(product.getCat());
@@ -84,20 +80,39 @@ public class GargotteModel {
     }
 
     public boolean bufferSale(IProduct product){
-        return productBuffer.addProduct(product);
+        boolean reply = productBuffer.addProduct(product);
+        if(reply){
+            this.dataEventFirerer.fireDataChangedEvent();
+        }
+        return reply;
     }
 
     public boolean unbufferSale(IProduct product){
-       return productBuffer.removeProduct(product);
+        boolean reply = productBuffer.removeProduct(product);
+        if(reply){
+            this.dataEventFirerer.fireDataChangedEvent();
+        }
+        return reply;
     }
 
+    public boolean setPaymentMethod(PaymentMethod paymentMethod){
+        this.paymentMethod = paymentMethod;
+        return true;
+    }
+    
     public boolean flushBufferedSales(){
-       Order order = this.productBuffer.makeOrder();
-       this.productBuffer = new ProductBuffer();
-
-       this.logger.log(order);
-       this.apply(order);
-       this.ioHandler.write(this.products);
+       Order order = this.productBuffer.makeOrder(paymentMethod);
+       
+       if(order.getSales().size()>0) {
+           this.apply(order);
+           this.logger.log(order);
+    
+           this.productBuffer = new ProductBuffer( );
+           paymentMethod = null;
+    
+           this.ioHandler.write(this.products);
+           this.dataEventFirerer.fireDataChangedEvent( );
+       }
        return true;
     }
 
@@ -129,5 +144,9 @@ public class GargotteModel {
 
     public void removeStateListener(IModelListener l){
         this.modelStateFirerer.removeListener(l);
+    }
+    
+    public PaymentMethod getPaymentMethod ( ) {
+        return paymentMethod;
     }
 }

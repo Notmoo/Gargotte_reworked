@@ -75,23 +75,59 @@ public class ComposedProduct implements IProduct {
     }
 
     public String getRepresentation(int level){
+       return getRepresentation(level, false);
+    }
+    
+    @Override
+    public String getRepresentation (int level, boolean simplifiedRepresentation) {
         StringBuffer sb = new StringBuffer();
         for(int i =0; i<level;i++){
             sb.append("\t");
         }
-
+    
         sb.append(name).append("\t");
-        sb.append("Menu").append("\t");
-        sb.append(price).append("\t");
-        sb.append(this.getAmountRemaining()).append("\t");
-        sb.append(amountSold);
-
+        sb.append(String.format("%.2f€", price)).append("\t");
+        if(!simplifiedRepresentation) {
+            sb.append("Menu").append("\t");
+            sb.append(this.getAmountRemaining( )).append("\t");
+            sb.append(amountSold);
+        }
+        
         if(components.size()>0) {
             sb.append("\n");
             for (IProduct component : components) {
-                sb.append(component.getRepresentation(level + 1)).append("\n");
+                sb.append(component.getRepresentation(level + 1, simplifiedRepresentation)).append("\n");
             }
         }
         return sb.toString();
+    }
+    
+    @Override
+    public boolean isComposedOf (IProduct product) {
+        if(isSameProduct(product)){
+            return true;
+        }else{
+            for(IProduct component : components){
+                if(component.isComposedOf(product))
+                    return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean isSameProduct (IProduct product) {
+        if(product.getClass().equals(ComposedProduct.class)){
+            ComposedProduct cp = (ComposedProduct) product;
+            boolean state = this.name.equals(product.getName()) && this.price==product.getPrice();
+            boolean components = this.components.size()==cp.components.size();
+            if(components){
+                for(int i = 0; i<this.components.size(); i++){
+                    components = components && this.components.get(i).isSameProduct(cp.components.get(i));
+                }
+            }
+            return state && components;
+        }else{
+            return false;
+        }
     }
 }

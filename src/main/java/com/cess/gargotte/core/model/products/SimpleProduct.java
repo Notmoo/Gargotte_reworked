@@ -55,17 +55,37 @@ public class SimpleProduct implements IProduct {
     }
 
     public String getRepresentation(int level){
+        return getRepresentation(level, false);
+    }
+    
+    @Override
+    public String getRepresentation (int level, boolean simplifiedRepresentation) {
         StringBuffer sb = new StringBuffer();
         for(int i =0; i<level;i++){
             sb.append("\t");
         }
-
+    
         sb.append(name).append("\t");
-        sb.append(category).append("\t");
-        sb.append(price).append("\t");
-        sb.append(amountRemaining).append("\t");
-        sb.append(amountSold);
-
+        sb.append(String.format("%.2f€", price)).append("\t");
+        if(!simplifiedRepresentation) {
+            sb.append(category).append("\t");
+            sb.append(amountRemaining).append("\t");
+            sb.append(amountSold);
+        }
+    
         return sb.toString();
+    }
+    
+    @Override
+    public boolean isComposedOf (IProduct product) {
+        return this.isSameProduct(product);
+    }
+    
+    public boolean isSameProduct (IProduct product) {
+        if(product.getClass().equals(SimpleProduct.class)){
+            return this.name.equals(product.getName()) && this.category.equals(product.getCat()) && this.price==product.getPrice();
+        }else{
+            return false;
+        }
     }
 }
