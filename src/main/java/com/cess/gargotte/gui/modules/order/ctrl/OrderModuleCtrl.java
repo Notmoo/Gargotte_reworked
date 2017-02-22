@@ -80,7 +80,14 @@ public class OrderModuleCtrl {
     
     public void onOrderValidationRequest(){
         if(this.model.getPaymentMethod()!=null){
-            this.model.flushBufferedSales();
+            boolean success = this.model.flushBufferedSales();
+            if(success){
+                this.view.changeActionInfoLabelText("Commande enregistrée avec succès", true);
+            }else{
+                this.view.changeActionInfoLabelText("Echec de l'enregistrement de la commande", false);
+            }
+        }else{
+            this.view.changeActionInfoLabelText("Echec de l'enregistrement de la commande : méthode de paiement non-sélectionnée", false);
         }
     }
     
