@@ -68,4 +68,17 @@ public class SimpleProduct implements IProduct {
 
         return sb.toString();
     }
+    
+    @Override
+    public boolean isComposedOf (IProduct product) {
+        return this.isSameProduct(product);
+    }
+    
+    public boolean isSameProduct (IProduct product) {
+        if(product.getClass().equals(SimpleProduct.class)){
+            return this.name.equals(product.getName()) && this.category.equals(product.getCat()) && this.price==product.getPrice();
+        }else{
+            return false;
+        }
+    }
 }

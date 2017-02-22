@@ -94,4 +94,33 @@ public class ComposedProduct implements IProduct {
         }
         return sb.toString();
     }
+    
+    @Override
+    public boolean isComposedOf (IProduct product) {
+        if(isSameProduct(product)){
+            return true;
+        }else{
+            for(IProduct component : components){
+                if(component.isComposedOf(product))
+                    return true;
+            }
+        }
+        return false;
+    }
+    
+    public boolean isSameProduct (IProduct product) {
+        if(product.getClass().equals(ComposedProduct.class)){
+            ComposedProduct cp = (ComposedProduct) product;
+            boolean state = this.name.equals(product.getName()) && this.price==product.getPrice();
+            boolean components = this.components.size()==cp.components.size();
+            if(components){
+                for(int i = 0; i<this.components.size(); i++){
+                    components = components && this.components.get(i).isSameProduct(cp.components.get(i));
+                }
+            }
+            return state && components;
+        }else{
+            return false;
+        }
+    }
 }
