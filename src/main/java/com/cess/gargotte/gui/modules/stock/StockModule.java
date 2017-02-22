@@ -2,6 +2,7 @@ package com.cess.gargotte.gui.modules.stock;
 
 import com.cess.gargotte.core.model.GargotteModel;
 import com.cess.gargotte.core.model.IModel;
+import com.cess.gargotte.core.model.listeners.IModelListener;
 import com.cess.gargotte.gui.modules.IModule;
 import com.cess.gargotte.gui.modules.stock.ctrl.StockModuleCtrl;
 import com.cess.gargotte.gui.modules.stock.view.StockModuleView;
@@ -23,6 +24,18 @@ public class StockModule implements IModule {
         this.view = new StockModuleView(ctrl);
         
         this.ctrl.setView(view);
+        this.view.updateData();
+        
+        model.addDataListener(new IModelListener( ) {
+            @Override
+            public void onDataChangedEvent ( ) {
+                StockModule.this.view.updateData();
+            }
+    
+            @Override
+            public void onErrorEvent (Throwable e) {
+            }
+        });
     }
     
     @Override
