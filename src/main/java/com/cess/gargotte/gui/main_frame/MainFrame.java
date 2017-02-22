@@ -21,7 +21,7 @@ public class MainFrame {
         this.ctrl = new MFCtrl();
         this.view = new MFView(ctrl);
         
-        this.stage.setScene(new Scene(view.getMainPane(), 500, 500));
+        this.stage.setScene(new Scene(view.getMainPane(), 800, 500));
     }
     
     public void addModule(IModule module){
