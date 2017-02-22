@@ -8,11 +8,13 @@ import java.util.List;
  */
 public class Order {
 
+    private PaymentMethod paymentMethod;
     private List<Sale> sales;
 
-    public Order(List<Sale> sales){
+    public Order(List<Sale> sales, PaymentMethod paymentMethod){
         this.sales = new ArrayList<Sale>();
-
+        this.paymentMethod = paymentMethod;
+        
         if(sales!=null){
             this.sales.addAll(sales);
         }
@@ -20,5 +22,8 @@ public class Order {
 
     public List<Sale> getSales() {
         return sales;
+    }
+    public PaymentMethod getPaymentMethod ( ) {
+        return paymentMethod;
     }
 }

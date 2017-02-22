@@ -5,6 +5,7 @@ import com.cess.gargotte.core.model.listeners.IModelListener;
 import com.cess.gargotte.core.model.listeners.ModelFirerer;
 import com.cess.gargotte.core.model.products.IProduct;
 import com.cess.gargotte.core.model.sales.Order;
+import com.cess.gargotte.core.model.sales.PaymentMethod;
 import com.cess.gargotte.core.model.sales.ProductBuffer;
 import com.cess.gargotte.core.model.sales.Sale;
 import com.cess.gargotte.log.IOrderLogger;
@@ -29,8 +30,11 @@ public class GargotteModel {
 
     private IIOHandler ioHandler;
     private IOrderLogger logger;
-    private ProductBuffer productBuffer;
+    
     private List<IProduct> products;
+    
+    private PaymentMethod paymentMethod;
+    private ProductBuffer productBuffer;
 
     private IModelFirerer dataEventFirerer;
     private IModelFirerer modelStateFirerer;
@@ -91,9 +95,15 @@ public class GargotteModel {
        return productBuffer.removeProduct(product);
     }
 
+    public boolean setPaymentMethod(PaymentMethod pm){
+        this.paymentMethod = paymentMethod;
+        return true;
+    }
+    
     public boolean flushBufferedSales(){
-       Order order = this.productBuffer.makeOrder();
+       Order order = this.productBuffer.makeOrder(paymentMethod);
        this.productBuffer = new ProductBuffer();
+       paymentMethod = null;
 
        this.logger.log(order);
        this.apply(order);

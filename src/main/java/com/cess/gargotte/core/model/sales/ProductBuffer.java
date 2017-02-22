@@ -44,10 +44,14 @@ public class ProductBuffer {
     }
 
     public Order makeOrder(){
+        return makeOrder(null);
+    }
+    
+    public Order makeOrder(PaymentMethod pm){
         List<Sale> sales = new ArrayList<Sale>();
         for(IProduct product : content.keySet()){
             sales.add(new Sale(product, this.content.get(product)));
         }
-        return new Order(sales);
+        return new Order(sales, pm);
     }
 }
