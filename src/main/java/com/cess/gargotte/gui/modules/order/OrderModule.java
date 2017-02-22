@@ -31,6 +31,7 @@ public class OrderModule implements IModule {
     
             @Override
             public void onErrorEvent (Throwable e) {
+                OrderModule.this.ctrl.onErrorEvent(e);
             }
         });
     }
