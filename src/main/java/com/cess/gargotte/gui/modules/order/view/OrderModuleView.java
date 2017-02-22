@@ -3,6 +3,7 @@ package com.cess.gargotte.gui.modules.order.view;
 import com.cess.gargotte.core.model.products.IProduct;
 import com.cess.gargotte.core.model.sales.PaymentMethod;
 import com.cess.gargotte.core.model.sales.Sale;
+import com.cess.gargotte.gui.modules.ModuleUtils;
 import com.cess.gargotte.gui.modules.order.ctrl.OrderModuleCtrl;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
@@ -18,8 +19,6 @@ import java.util.List;
  * Created by Guillaume on 21/02/2017.
  */
 public class OrderModuleView {
-    
-    private static final String SUCCESS_FONT_COLOR = "#008b50", FAILURE_FONT_COLOR = "#bb271c";
     
     private BorderPane mainPane;
     private OrderModuleCtrl ctrl;
@@ -168,6 +167,6 @@ public class OrderModuleView {
     
     public void changeActionInfoLabelText(String text, boolean success){
         this.actionInfoLabel.setText(text);
-        this.actionInfoLabel.setStyle("-fx-text-fill: "+(success?SUCCESS_FONT_COLOR:FAILURE_FONT_COLOR)+";");
+        this.actionInfoLabel.setStyle("-fx-text-fill: "+(success? ModuleUtils.getSuccessLabelColor():ModuleUtils.getFailureLabelColor())+";");
     }
 }
