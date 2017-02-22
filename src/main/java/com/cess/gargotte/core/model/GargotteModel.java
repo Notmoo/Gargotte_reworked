@@ -60,16 +60,8 @@ public class GargotteModel {
     }
 
     public List<IProduct> getProductsFromCat(final String cat){
-        final List<IProduct> reply = new ArrayList<IProduct>();
-        this.products.stream().filter(new Predicate<IProduct>(){
-            public boolean test(IProduct product){
-                return product.getCat().equals(cat);
-            }
-        }).forEach(new Consumer<IProduct>() {
-            public void accept(IProduct product) {
-                reply.add(product);
-            }
-        });
+        final List<IProduct> reply = new ArrayList<>();
+        this.products.stream().filter((product)-> product.getCat().equals(cat)).forEach((product)-> reply.add(product));
         return reply;
     }
 
@@ -78,7 +70,7 @@ public class GargotteModel {
     }
 
     public List<String> getCatList(){
-        final List<String> reply = new ArrayList<String>();
+        final List<String> reply = new ArrayList<>();
         for(IProduct product : this.products){
             if(!reply.contains(product.getCat())){
                 reply.add(product.getCat());
