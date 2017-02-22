@@ -75,21 +75,28 @@ public class ComposedProduct implements IProduct {
     }
 
     public String getRepresentation(int level){
+       return getRepresentation(level, false);
+    }
+    
+    @Override
+    public String getRepresentation (int level, boolean simplifiedRepresentation) {
         StringBuffer sb = new StringBuffer();
         for(int i =0; i<level;i++){
             sb.append("\t");
         }
-
+    
         sb.append(name).append("\t");
-        sb.append("Menu").append("\t");
-        sb.append(price).append("\t");
-        sb.append(this.getAmountRemaining()).append("\t");
-        sb.append(amountSold);
-
+        sb.append(String.format("%.2f€", price)).append("\t");
+        if(!simplifiedRepresentation) {
+            sb.append("Menu").append("\t");
+            sb.append(this.getAmountRemaining( )).append("\t");
+            sb.append(amountSold);
+        }
+        
         if(components.size()>0) {
             sb.append("\n");
             for (IProduct component : components) {
-                sb.append(component.getRepresentation(level + 1)).append("\n");
+                sb.append(component.getRepresentation(level + 1, simplifiedRepresentation)).append("\n");
             }
         }
         return sb.toString();

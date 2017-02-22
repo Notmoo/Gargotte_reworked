@@ -19,6 +19,7 @@ public interface IProduct extends Serializable{
     public void addAmount(int amount);
 
     public String getRepresentation(int level);
+    public String getRepresentation(int level, boolean simplifiedRepresentation);
     public boolean isComposedOf(IProduct product);
     public boolean isSameProduct(IProduct product);
 }
