@@ -8,9 +8,7 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 
 import java.util.ArrayList;
 import java.util.EnumSet;
@@ -31,6 +29,7 @@ public class OrderModuleView {
     private Label priceLabel;
     private Label actionInfoLabel;
     private ToggleGroup paymentMethodGroup;
+    private Button orderValidationButton;
     
     public OrderModuleView(OrderModuleCtrl ctrl){
         if(ctrl == null){
@@ -95,6 +94,18 @@ public class OrderModuleView {
         rightToolbar.getItems().addAll(priceLabel, new Separator(Orientation.VERTICAL), paymentMethodVBox);
         mainPane.setRight(rightToolbar);
         
+        
+        AnchorPane bottomPane = new AnchorPane();
+        ToolBar bottomToolBar = new ToolBar();
+        orderValidationButton = new Button("Valider la commande");
+        orderValidationButton.setOnAction(event->ctrl.onOrderValidationRequest());
+        bottomToolBar.getItems().add(orderValidationButton);
+        
+        bottomPane.getChildren().add(bottomToolBar);
+        AnchorPane.setRightAnchor(bottomToolBar, 2d);
+        
+        mainPane.setBottom(bottomPane);
+        
         updateData();
     }
     
@@ -105,7 +116,11 @@ public class OrderModuleView {
     private ProductListView newProductListView (String catName ) {
         ProductListView list = new ProductListView(catName);
         
-        list.setCellFactory((product)-> new ListCell<IProduct>(){
+        list.setCellFactory((product)-> {
+            ListCell<IProduct> cell = new ListCell<IProduct>(){
+                
+                private Tooltip tooltip;
+                
                 @Override
                 protected void updateItem (IProduct item, boolean empty) {
                     super.updateItem(item, empty);
@@ -115,7 +130,21 @@ public class OrderModuleView {
                     } else {
                         this.setText(item.getName( ) + " (" + item.getAmountRemaining( ) + ")");
                     }
+                    
+                    this.updateTooltip(item, empty);
                 }
+    
+                private void updateTooltip (IProduct item, boolean empty) {
+                    if(empty && item==null){
+                        this.tooltip = null;
+                        super.setTooltip(null);
+                    }else{
+                        this.tooltip = new Tooltip(item.getRepresentation(0, true));
+                        super.setTooltip(tooltip);
+                    }
+                }
+            };
+            return cell;
         });
         
         return list;
