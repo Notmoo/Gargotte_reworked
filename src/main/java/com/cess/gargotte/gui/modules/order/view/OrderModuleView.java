@@ -152,7 +152,10 @@ public class OrderModuleView {
     
     public void updateData ( ) {
         for(ProductListView list : lists){
-            Platform.runLater(()-> list.setItems(FXCollections.observableArrayList(this.ctrl.getProducts(list.getCatName()))));
+            Platform.runLater(()-> {
+                list.getItems().clear();
+                list.getItems().addAll(this.ctrl.getProducts(list.getCatName()));
+            });
         }
         
         Platform.runLater(()-> saleListView.setItems(FXCollections.observableArrayList(ctrl.getOrderSales())));
