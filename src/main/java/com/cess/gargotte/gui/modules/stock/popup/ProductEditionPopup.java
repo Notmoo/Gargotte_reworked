@@ -46,6 +46,10 @@ public class ProductEditionPopup {
     
         Label catLabel = new Label("Catégorie");
         ComboBox catComboBox = new ComboBox();
+        catComboBox.setEditable(true);
+        catComboBox.getEditor().textProperty().addListener((obs, oldText, newText) -> {
+            catComboBox.setValue(newText);
+        });
         catComboBox.setPrefSize(CONTROL_PREF_WIDTH, CONTROL_PREF_HEIGHT);
         
         Label priceLabel = new Label("Prix");
