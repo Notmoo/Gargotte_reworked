@@ -60,13 +60,15 @@ public class GargotteModel implements IModel{
     }
 
     public List<IProduct> getProductsFromCat(final String cat){
-        final List<IProduct> reply = new ArrayList<>();
-        this.products.stream().filter((product)-> product.getCat().equals(cat)).forEach((product)-> reply.add(product));
+        final List<IProduct> reply = new ArrayList<>( );
+        if(cat!=null ) {
+            this.products.stream( ).filter((product) -> product.getCat( ).equals(cat)).forEach((product) -> reply.add(product));
+        }
         return reply;
     }
 
     public Order getCurrentOrder(){
-        return this.productBuffer.makeOrder();
+        return this.productBuffer.makeOrder(paymentMethod);
     }
 
     public List<String> getCatList(){

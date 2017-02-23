@@ -1,6 +1,5 @@
 package com.cess.gargotte.gui.modules.stock;
 
-import com.cess.gargotte.core.model.GargotteModel;
 import com.cess.gargotte.core.model.IModel;
 import com.cess.gargotte.core.model.listeners.IModelListener;
 import com.cess.gargotte.gui.modules.IModule;
