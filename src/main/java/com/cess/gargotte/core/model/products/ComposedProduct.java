@@ -11,12 +11,14 @@ public class ComposedProduct implements IProduct {
     private static final long serialVersionUID = 1L;
 
     private final String name;
+    private final String category;
     private final double price;
     private int amountSold;
     private final List<IProduct> components;
 
-    public ComposedProduct(String name, double price, int amountSold, List<IProduct> components){
+    public ComposedProduct(String name, String category, double price, int amountSold, List<IProduct> components){
         this.name = name;
+        this.category = category;
         this.price = price;
         this.amountSold = amountSold;
         this.components = new ArrayList<IProduct>();
@@ -50,7 +52,7 @@ public class ComposedProduct implements IProduct {
     }
 
     public String getCat() {
-        return "ComposedProduct";
+        return category;
     }
 
     public List<IProduct> getComponents(){
