@@ -150,4 +150,8 @@ public class StockModuleView {
             this.rightToolbar.getItems().add(unlockedStateControlsVBox);
         }
     }
+    
+    public IProduct getSelectedProduct ( ) {
+        return this.stockTable.getSelectionModel().getSelectedItem().getValue();
+    }
 }

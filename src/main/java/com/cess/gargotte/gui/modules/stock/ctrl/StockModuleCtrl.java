@@ -2,6 +2,7 @@ package com.cess.gargotte.gui.modules.stock.ctrl;
 
 import com.cess.gargotte.core.model.IModel;
 import com.cess.gargotte.core.model.products.IProduct;
+import com.cess.gargotte.gui.modules.stock.popup.ProductEditionPopup;
 import com.cess.gargotte.gui.modules.stock.view.StockModuleView;
 
 import java.util.List;
@@ -35,9 +36,11 @@ public class StockModuleCtrl {
     }
     
     public void onAddProductRequest ( ) {
+        ProductEditionPopup.newPopup(null);
     }
     
     public void onEditProductRequest ( ) {
+        ProductEditionPopup.newPopup(this.view.getSelectedProduct());
     }
     
     public void onRemoveProductRequest ( ) {
