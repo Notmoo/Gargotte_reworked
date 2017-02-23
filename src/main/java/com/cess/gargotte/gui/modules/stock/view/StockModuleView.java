@@ -22,6 +22,8 @@ import java.util.List;
  */
 public class StockModuleView {
     
+    private static final double CONTROL_PREF_HEIGHT = 25, CONTROL_PREF_WIDTH = 125;
+    
     private StockModuleCtrl ctrl;
     private BorderPane mainPane;
     private TreeTableView<IProduct> stockTable;
@@ -76,19 +78,34 @@ public class StockModuleView {
         rightToolbar = new ToolBar();
         rightToolbar.setOrientation(Orientation.VERTICAL);
         
-        lockedStateControlsVBox = new VBox();
-        unlockedStateControlsVBox = new VBox();
-        
         passwordField = new TextField();
         passwordField.setPromptText("Mot de passe");
+        passwordField.setPrefSize(CONTROL_PREF_WIDTH, CONTROL_PREF_HEIGHT);
         passwordField.setOnAction(event->{
             this.ctrl.onUnlockAttempt(passwordField.getText());
         });
-        passwordField.requestFocus();
-        
+    
+        lockedStateControlsVBox = new VBox();
         lockedStateControlsVBox.getChildren().add(passwordField);
-        
         rightToolbar.getItems().add(lockedStateControlsVBox);
+        
+        unlockedStateControlsVBox = new VBox();
+        
+        Button addProductButton = new Button("Nouveau");
+        addProductButton.setPrefSize(CONTROL_PREF_WIDTH, CONTROL_PREF_HEIGHT);
+        addProductButton.setOnAction(event-> this.ctrl.onAddProductRequest());
+        
+        Button editProductButton = new Button("Modifier");
+        editProductButton.setPrefSize(CONTROL_PREF_WIDTH, CONTROL_PREF_HEIGHT);
+        editProductButton.setOnAction(event-> this.ctrl.onEditProductRequest());
+        editProductButton.disableProperty().bind(this.stockTable.getSelectionModel().selectedItemProperty().isNull());
+        
+        Button removeProductButton = new Button("Supprimer");
+        removeProductButton.setPrefSize(CONTROL_PREF_WIDTH, CONTROL_PREF_HEIGHT);
+        removeProductButton.setOnAction(event-> this.ctrl.onRemoveProductRequest());
+        removeProductButton.disableProperty().bind(this.stockTable.getSelectionModel().selectedItemProperty().isNull());
+        
+        unlockedStateControlsVBox.getChildren().addAll(addProductButton, editProductButton, removeProductButton);
         
         this.mainPane.setRight(rightToolbar);
     }

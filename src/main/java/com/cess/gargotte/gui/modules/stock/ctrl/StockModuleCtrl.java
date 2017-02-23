@@ -29,9 +29,17 @@ public class StockModuleCtrl {
     }
     
     public void onUnlockAttempt (String text) {
-        System.out.println("working" );
         if(text.equals(PASSWORD)){
             this.view.setViewUnlocked(true);
         }
+    }
+    
+    public void onAddProductRequest ( ) {
+    }
+    
+    public void onEditProductRequest ( ) {
+    }
+    
+    public void onRemoveProductRequest ( ) {
     }
 }
