@@ -7,6 +7,7 @@ import com.cess.gargotte.core.model.products.SimpleProduct;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
@@ -104,13 +105,6 @@ public class ProductEditionPopup {
                 return cp;
             }
         }));
-        listView.getItems().forEach(cp->{
-            cp.checked.addListener((obs, oldVal, newVal)->{
-                if(ProductEditionPopup.hasComponents(listView)){
-                    amountRemainingTextField.setDisable(true);
-                }
-            });
-        });
         
         mainPane.setBottom(listView);
         
@@ -118,7 +112,11 @@ public class ProductEditionPopup {
             dialog.setTitle("Ajout d'un produit");
             catComboBox.getSelectionModel().select("");
             List<CheckableProduct> cps = new ArrayList<>();
-            model.getProducts().forEach(product->cps.add(new CheckableProduct(product)));
+            model.getProducts().forEach(product->{
+                CheckableProduct cp = new CheckableProduct(product);
+                cp.checked.addListener(ProductEditionPopup.onComponentListChanged(listView, amountRemainingTextField));
+                cps.add(cp);
+            });
             Platform.runLater(()->listView.getItems().addAll(cps));
         }else{
             dialog.setTitle("Edition d'un produit");
@@ -128,6 +126,8 @@ public class ProductEditionPopup {
                 CheckableProduct cp = new CheckableProduct(product);
                 if(initialProduct.isComposedOf(product))
                     cp.checked.setValue(true);
+                cp.checked.addListener(ProductEditionPopup.onComponentListChanged(listView, amountRemainingTextField));
+                
                 cps.add(cp);
             });
             listView.getItems().addAll(cps);
@@ -140,7 +140,6 @@ public class ProductEditionPopup {
             priceTextField.setText(Double.toString(initialProduct.getPrice()));
             amountRemainingTextField.setText(Integer.toString(initialProduct.getAmountRemaining()));
             amountSoldTextField.setText(Integer.toString(initialProduct.getAmountSold()));
-            
         }
         
         dialog.getDialogPane().setContent(mainPane);
@@ -186,6 +185,17 @@ public class ProductEditionPopup {
         });
     
         return dialog.showAndWait();
+    }
+    
+    private static ChangeListener<? super java.lang.Boolean> onComponentListChanged (ListView<CheckableProduct> listView, Control... cs) {
+        return (obs, oldVal, newVal)-> {
+            if (ProductEditionPopup.hasComponents(listView))
+                for(Control c : cs)
+                    c.setDisable(true);
+            else
+                for(Control c : cs)
+                    c.setDisable(false);
+        };
     }
     
     private static boolean hasComponents (ListView<CheckableProduct> listView) {
