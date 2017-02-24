@@ -22,7 +22,7 @@ public class OrderModuleView {
     
     private BorderPane mainPane;
     private OrderModuleCtrl ctrl;
-    private List<ProductListView> lists;
+    private List<ProductListViewGUIComponent> lists;
     private ListView<Sale> saleListView;
     
     private Label priceLabel;
@@ -42,7 +42,7 @@ public class OrderModuleView {
         productTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         
         for(String category : this.ctrl.getCategories()){
-            ProductListView list = this.newProductListView(category);
+            ProductListViewGUIComponent list = this.newProductListView(category);
             list.setOnMouseClicked(event->ctrl.onAddProductToSaleRequest(list.getSelectionModel().getSelectedItem()));
             Tab tab = new Tab(category, list);
             this.lists.add(list);
@@ -112,8 +112,8 @@ public class OrderModuleView {
         this.priceLabel.setText(String.format("Total : %.2f€", price));
     }
     
-    private ProductListView newProductListView (String catName ) {
-        ProductListView list = new ProductListView(catName);
+    private ProductListViewGUIComponent newProductListView (String catName ) {
+        ProductListViewGUIComponent list = new ProductListViewGUIComponent(catName);
         
         list.setCellFactory((product)-> {
             ListCell<IProduct> cell = new ListCell<IProduct>(){
@@ -150,7 +150,7 @@ public class OrderModuleView {
     }
     
     public void updateData ( ) {
-        for(ProductListView list : lists){
+        for(ProductListViewGUIComponent list : lists){
             Platform.runLater(()-> {
                 list.getItems().clear();
                 list.getItems().addAll(this.ctrl.getProducts(list.getCatName()));
