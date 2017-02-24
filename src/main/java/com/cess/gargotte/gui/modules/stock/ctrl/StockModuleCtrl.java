@@ -38,15 +38,22 @@ public class StockModuleCtrl {
     
     public void onAddProductRequest ( ) {
         Optional<IProduct> result = ProductEditionPopup.newPopup(null, model);
-        result.ifPresent((product)->model.addProduct(product));
+        result.ifPresent((product)->{
+            model.addProduct(product);
+            this.view.changeActionInfoLabelText("Produit ajouté", true);
+        });
     }
     
     public void onEditProductRequest ( ) {
         Optional<IProduct> result = ProductEditionPopup.newPopup(this.view.getSelectedProduct(), model);
-        result.ifPresent(product -> model.replaceProduct(this.view.getSelectedProduct(), product));
+        result.ifPresent(product -> {
+            model.replaceProduct(this.view.getSelectedProduct(), product);
+            this.view.changeActionInfoLabelText("Produit modifié", true);
+        });
     }
     
     public void onRemoveProductRequest ( ) {
         model.removeProduct(this.view.getSelectedProduct());
+        this.view.changeActionInfoLabelText("Produit retiré", true);
     }
 }
