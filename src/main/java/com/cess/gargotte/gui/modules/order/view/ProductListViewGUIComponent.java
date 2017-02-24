@@ -7,11 +7,11 @@ import javafx.scene.control.Tab;
 /**
  * Created by Guillaume on 21/02/2017.
  */
-public class ProductListView extends ListView<IProduct>{
+public class ProductListViewGUIComponent extends ListView<IProduct>{
     
     private final String catName;
     
-    public ProductListView (String name){
+    public ProductListViewGUIComponent (String name){
         super();
         this.catName = name;
     }

@@ -12,7 +12,7 @@ public class Order {
     private List<Sale> sales;
 
     public Order(List<Sale> sales, PaymentMethod paymentMethod){
-        this.sales = new ArrayList<Sale>();
+        this.sales = new ArrayList<>();
         this.paymentMethod = paymentMethod;
         
         if(sales!=null){

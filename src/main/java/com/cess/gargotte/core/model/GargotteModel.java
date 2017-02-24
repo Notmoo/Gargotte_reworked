@@ -24,7 +24,7 @@ import java.util.function.Predicate;
 /**
  * Created by Guillaume on 19/02/2017.
  */
-public class GargotteModel {
+public class GargotteModel implements IModel{
 
     private static final Path PRODUCT_FILE_PATH = Paths.get("produits.gargotte"), SALES_LOG_FILE_PATH = Paths.get("ventes.log");
 
@@ -60,13 +60,15 @@ public class GargotteModel {
     }
 
     public List<IProduct> getProductsFromCat(final String cat){
-        final List<IProduct> reply = new ArrayList<>();
-        this.products.stream().filter((product)-> product.getCat().equals(cat)).forEach((product)-> reply.add(product));
+        final List<IProduct> reply = new ArrayList<>( );
+        if(cat!=null ) {
+            this.products.stream( ).filter((product) -> product.getCat( ).equals(cat)).forEach((product) -> reply.add(product));
+        }
         return reply;
     }
 
     public Order getCurrentOrder(){
-        return this.productBuffer.makeOrder();
+        return this.productBuffer.makeOrder(paymentMethod);
     }
 
     public List<String> getCatList(){
@@ -148,5 +150,43 @@ public class GargotteModel {
     
     public PaymentMethod getPaymentMethod ( ) {
         return paymentMethod;
+    }
+    
+    @Override
+    public void replaceProduct (IProduct toReplace, IProduct with) {
+        for(IProduct product : new ArrayList<>(this.products)){
+            if(product.isSameProduct(toReplace)){
+                int index = this.products.indexOf(toReplace);
+                this.products.remove(toReplace);
+                this.products.add(index, with);
+            }else if(product.isComposedOf(toReplace)){
+                product.replaceComponent(toReplace, with);
+            }
+        }
+        
+        this.ioHandler.write(this.products);
+        this.dataEventFirerer.fireDataChangedEvent();
+    }
+    
+    @Override
+    public void addProduct (IProduct toAdd) {
+        this.products.add(toAdd);
+        
+        this.ioHandler.write(this.products);
+        this.dataEventFirerer.fireDataChangedEvent();
+    }
+    
+    @Override
+    public void removeProduct (IProduct toRemove) {
+        for(IProduct product : new ArrayList<>(this.products)){
+            if(product.isSameProduct(toRemove)){
+                this.products.remove(product);
+            }else if(product.isComposedOf(toRemove)){
+                product.removeComponent(toRemove);
+            }
+        }
+        
+        this.ioHandler.write(this.products);
+        this.dataEventFirerer.fireDataChangedEvent();
     }
 }

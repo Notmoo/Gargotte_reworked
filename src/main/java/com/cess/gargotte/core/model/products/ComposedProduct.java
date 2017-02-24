@@ -11,15 +11,17 @@ public class ComposedProduct implements IProduct {
     private static final long serialVersionUID = 1L;
 
     private final String name;
+    private final String category;
     private final double price;
     private int amountSold;
     private final List<IProduct> components;
 
-    public ComposedProduct(String name, double price, int amountSold, List<IProduct> components){
+    public ComposedProduct(String name, String category, double price, int amountSold, List<IProduct> components){
         this.name = name;
+        this.category = category;
         this.price = price;
         this.amountSold = amountSold;
-        this.components = new ArrayList<IProduct>();
+        this.components = new ArrayList<>();
         if(components!=null){
             this.components.addAll(components);
         }
@@ -50,7 +52,7 @@ public class ComposedProduct implements IProduct {
     }
 
     public String getCat() {
-        return "ComposedProduct";
+        return category;
     }
 
     public List<IProduct> getComponents(){
@@ -73,7 +75,31 @@ public class ComposedProduct implements IProduct {
             component.addAmount(amount);
         }
     }
-
+    
+    @Override
+    public void removeComponent (IProduct toRemove) {
+        for(IProduct product : new ArrayList<>(components)){
+            if(product.isSameProduct(toRemove)){
+                this.components.remove(product);
+            }else if(product.isComposedOf(toRemove)){
+                product.removeComponent(toRemove);
+            }
+        }
+    }
+    
+    @Override
+    public void replaceComponent (IProduct toReplace, IProduct with) {
+        for(IProduct product : new ArrayList<>(components)){
+            if(product.isSameProduct(toReplace)){
+                int index = this.components.indexOf(toReplace);
+                this.components.remove(toReplace);
+                this.components.add(index, with);
+            }else if(product.isComposedOf(toReplace)){
+                product.replaceComponent(toReplace, with);
+            }
+        }
+    }
+    
     public String getRepresentation(int level){
        return getRepresentation(level, false);
     }
