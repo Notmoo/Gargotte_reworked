@@ -6,6 +6,7 @@ import com.cess.gargotte.gui.modules.stock.popup.ProductEditionPopup;
 import com.cess.gargotte.gui.modules.stock.view.StockModuleView;
 
 import java.util.List;
+import java.util.Optional;
 
 /**
  * Created by Guillaume on 22/02/2017.
@@ -36,13 +37,16 @@ public class StockModuleCtrl {
     }
     
     public void onAddProductRequest ( ) {
-        ProductEditionPopup.newPopup(null, model);
+        Optional<IProduct> result = ProductEditionPopup.newPopup(null, model);
+        result.ifPresent((product)->model.addProduct(product));
     }
     
     public void onEditProductRequest ( ) {
-        ProductEditionPopup.newPopup(this.view.getSelectedProduct(), model);
+        Optional<IProduct> result = ProductEditionPopup.newPopup(this.view.getSelectedProduct(), model);
+        result.ifPresent(product -> model.replaceProduct(this.view.getSelectedProduct(), product));
     }
     
     public void onRemoveProductRequest ( ) {
+        model.removeProduct(this.view.getSelectedProduct());
     }
 }
