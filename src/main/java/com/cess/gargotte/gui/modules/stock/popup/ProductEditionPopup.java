@@ -119,7 +119,7 @@ public class ProductEditionPopup {
             catComboBox.getSelectionModel().select("");
             List<CheckableProduct> cps = new ArrayList<>();
             model.getProducts().forEach(product->cps.add(new CheckableProduct(product)));
-            Platform.runLater(()->listView.getItems().addAll());
+            Platform.runLater(()->listView.getItems().addAll(cps));
         }else{
             dialog.setTitle("Edition d'un produit");
     
