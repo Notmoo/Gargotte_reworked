@@ -1,13 +1,24 @@
 package com.cess.gargotte.gui.modules.stock.popup;
 
+import com.cess.gargotte.core.model.IModel;
 import com.cess.gargotte.core.model.products.IProduct;
+import com.cess.gargotte.core.model.products.SimpleProduct;
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
+import javafx.beans.property.SimpleBooleanProperty;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.CheckBoxListCell;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
+import javafx.util.Callback;
+import javafx.util.StringConverter;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -20,7 +31,7 @@ public class ProductEditionPopup {
     private ProductEditionPopup(){
     }
     
-    public static Optional<IProduct> newPopup(IProduct initialProduct){
+    public static Optional<IProduct> newPopup(final IProduct initialProduct, final IModel model){
         
         Dialog<IProduct> dialog = new Dialog<>();
         if(initialProduct==null){
@@ -39,6 +50,8 @@ public class ProductEditionPopup {
         BorderPane mainPane = new BorderPane();
     
         GridPane centerPane = new GridPane();
+        centerPane.setHgap(5);
+        centerPane.setVgap(5);
         
         Label nameLabel = new Label("Nom");
         TextField nameTextField = new TextField();
@@ -47,9 +60,8 @@ public class ProductEditionPopup {
         Label catLabel = new Label("Catégorie");
         ComboBox catComboBox = new ComboBox();
         catComboBox.setEditable(true);
-        catComboBox.getEditor().textProperty().addListener((obs, oldText, newText) -> {
-            catComboBox.setValue(newText);
-        });
+        catComboBox.getEditor().textProperty().addListener((obs, oldText, newText) -> catComboBox.setValue(newText));
+        catComboBox.setItems(FXCollections.observableArrayList(model.getCatList()));
         catComboBox.setPrefSize(CONTROL_PREF_WIDTH, CONTROL_PREF_HEIGHT);
         
         Label priceLabel = new Label("Prix");
@@ -76,10 +88,39 @@ public class ProductEditionPopup {
         centerPane.add(amountSoldTextField, 1,4);
         
         mainPane.setCenter(centerPane);
+    
+        ListView<IProduct> listView = new ListView<>();
+        
+        listView.setCellFactory(CheckBoxListCell.forListView(item -> new SimpleBooleanProperty( ), new StringConverter<IProduct>( ) {
+            @Override
+            public String toString (IProduct product) {
+                return product.getName();
+            }
+    
+            @Override
+            public IProduct fromString (String productName) {
+                IProduct reply = null;
+                for(IProduct currentProduct : model.getProducts()){
+                    if(productName.equals(currentProduct)){
+                        reply = currentProduct;
+                        break;
+                    }
+                }
+                return reply;
+            }
+        }));
+        
+        if(initialProduct==null)
+            Platform.runLater(()->listView.getItems().addAll(model.getProducts()));
+        else{
+            List<IProduct> products = new ArrayList<>();
+            model.getProducts().stream().filter((product)->!initialProduct.isComposedOf(product) && !product.isComposedOf(initialProduct)).forEach(product->products.add(product));
+        }
+        
+        mainPane.setBottom(listView);
         
         dialog.getDialogPane().setContent(mainPane);
 
-        // Convert the result to a username-password-pair when the login button is clicked.
         dialog.setResultConverter(dialogButton -> {
             //TODO Faire le result converter
             return null;

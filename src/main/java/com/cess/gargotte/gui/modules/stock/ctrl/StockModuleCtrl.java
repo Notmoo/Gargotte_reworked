@@ -36,11 +36,11 @@ public class StockModuleCtrl {
     }
     
     public void onAddProductRequest ( ) {
-        ProductEditionPopup.newPopup(null);
+        ProductEditionPopup.newPopup(null, model);
     }
     
     public void onEditProductRequest ( ) {
-        ProductEditionPopup.newPopup(this.view.getSelectedProduct());
+        ProductEditionPopup.newPopup(this.view.getSelectedProduct(), model);
     }
     
     public void onRemoveProductRequest ( ) {
