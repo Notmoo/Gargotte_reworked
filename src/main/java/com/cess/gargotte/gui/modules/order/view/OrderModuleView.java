@@ -22,13 +22,14 @@ public class OrderModuleView {
     
     private BorderPane mainPane;
     private OrderModuleCtrl ctrl;
+    
+    private TabPane productTabPane;
     private List<ProductListViewGUIComponent> lists;
     private ListView<Sale> saleListView;
     
     private Label priceLabel;
     private Label actionInfoLabel;
     private ToggleGroup paymentMethodGroup;
-    private Button orderValidationButton;
     
     public OrderModuleView(OrderModuleCtrl ctrl){
         if(ctrl == null){
@@ -38,12 +39,11 @@ public class OrderModuleView {
         this.lists = new ArrayList<>();
         mainPane = new BorderPane();
     
-        TabPane productTabPane = new TabPane();
+        productTabPane = new TabPane();
         productTabPane.setTabClosingPolicy(TabPane.TabClosingPolicy.UNAVAILABLE);
         
         for(String category : this.ctrl.getCategories()){
-            ProductListViewGUIComponent list = this.newProductListView(category);
-            list.setOnMouseClicked(event->ctrl.onAddProductToSaleRequest(list.getSelectionModel().getSelectedItem()));
+            ProductListViewGUIComponent list = this.newProductListComponent(category);
             Tab tab = new Tab(category, list);
             this.lists.add(list);
             productTabPane.getTabs().add(tab);
@@ -96,7 +96,7 @@ public class OrderModuleView {
         
         AnchorPane bottomPane = new AnchorPane();
         ToolBar bottomToolBar = new ToolBar();
-        orderValidationButton = new Button("Valider la commande");
+        Button orderValidationButton = new Button("Valider la commande");
         orderValidationButton.setOnAction(event->ctrl.onOrderValidationRequest());
         bottomToolBar.getItems().add(orderValidationButton);
         
@@ -108,15 +108,26 @@ public class OrderModuleView {
         updateData();
     }
     
+    private void removeListFromGui(ProductListViewGUIComponent list){
+        this.productTabPane.getTabs().removeIf(tab->tab.getText().equals(list.getCatName()));
+        lists.remove(list);
+    }
+    
+    private void addListToGui(ProductListViewGUIComponent list){
+        this.lists.add(list);
+        Tab tab = new Tab(list.getCatName());
+        tab.setContent(list);
+        this.productTabPane.getTabs().add(tab);
+    }
+    
     private void displayPrice (double price) {
         this.priceLabel.setText(String.format("Total : %.2f€", price));
     }
     
-    private ProductListViewGUIComponent newProductListView (String catName ) {
+    private ProductListViewGUIComponent newProductListComponent (String catName ) {
         ProductListViewGUIComponent list = new ProductListViewGUIComponent(catName);
         
-        list.setCellFactory((product)-> {
-            ListCell<IProduct> cell = new ListCell<IProduct>(){
+        list.setCellFactory((product)->new ListCell<IProduct>(){
                 
                 private Tooltip tooltip;
                 
@@ -142,14 +153,35 @@ public class OrderModuleView {
                         super.setTooltip(tooltip);
                     }
                 }
-            };
-            return cell;
-        });
+            });
+    
+        list.setOnMouseClicked(event->ctrl.onAddProductToSaleRequest(list.getSelectionModel().getSelectedItem()));
         
         return list;
     }
     
     public void updateData ( ) {
+        List<String> catCache = new ArrayList<>(), catFromModel = ctrl.getCategories();
+        
+        lists.forEach(list->catCache.add(list.getCatName()));
+        
+        for(String cat : catFromModel){
+            if(!catCache.contains(cat)){
+                catCache.add(cat);
+                this.addListToGui(this.newProductListComponent(cat));
+            }
+        }
+        for(String cat : catCache){
+            if(!catFromModel.contains(cat)){
+                for(ProductListViewGUIComponent list : new ArrayList<>(lists)){
+                   if(list.getCatName().equals(cat)) {
+                       removeListFromGui(list);
+                   }
+                }
+            }
+        }
+        
+        
         for(ProductListViewGUIComponent list : lists){
             Platform.runLater(()-> {
                 list.getItems().clear();
@@ -168,5 +200,9 @@ public class OrderModuleView {
     public void changeActionInfoLabelText(String text, boolean success){
         this.actionInfoLabel.setText(text);
         this.actionInfoLabel.setStyle("-fx-text-fill: "+(success? ModuleUtils.getSuccessLabelColor():ModuleUtils.getFailureLabelColor())+";");
+    }
+    
+    public void resetOrder(){
+        this.paymentMethodGroup.selectToggle(null);
     }
 }

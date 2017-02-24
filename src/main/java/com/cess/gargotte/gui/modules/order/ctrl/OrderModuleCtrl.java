@@ -73,7 +73,9 @@ public class OrderModuleCtrl {
     }
     
     public void onPaymentMethodChangeRequest (Toggle toggle) {
-        if(toggle.getUserData().getClass().equals(PaymentMethod.class)){
+        if(toggle == null){
+            this.model.setPaymentMethod(null);
+        }else if(toggle.getUserData().getClass().equals(PaymentMethod.class)){
             this.model.setPaymentMethod((PaymentMethod) toggle.getUserData());
         }
     }
@@ -83,6 +85,7 @@ public class OrderModuleCtrl {
             if ( this.model.getPaymentMethod( ) != null ) {
                 boolean success = this.model.flushBufferedSales( );
                 if ( success ) {
+                    this.view.resetOrder();
                     this.view.changeActionInfoLabelText("Commande enregistrée avec succès", true);
                 } else {
                     this.view.changeActionInfoLabelText("Echec de l'enregistrement de la commande", false);
