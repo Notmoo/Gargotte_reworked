@@ -163,12 +163,16 @@ public class GargotteModel implements IModel{
                 product.replaceComponent(toReplace, with);
             }
         }
+        
+        this.ioHandler.write(this.products);
         this.dataEventFirerer.fireDataChangedEvent();
     }
     
     @Override
     public void addProduct (IProduct toAdd) {
         this.products.add(toAdd);
+        
+        this.ioHandler.write(this.products);
         this.dataEventFirerer.fireDataChangedEvent();
     }
     
@@ -181,6 +185,8 @@ public class GargotteModel implements IModel{
                 product.removeComponent(toRemove);
             }
         }
+        
+        this.ioHandler.write(this.products);
         this.dataEventFirerer.fireDataChangedEvent();
     }
 }
