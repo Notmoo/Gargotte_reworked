@@ -8,18 +8,21 @@ import java.util.List;
  */
 public interface IProduct extends Serializable{
 
-    public String getName();
-    public double getPrice();
-    public int getAmountSold();
-    public int getAmountRemaining();
-    public String getCat();
+    String getName();
+    double getPrice();
+    int getAmountSold();
+    int getAmountRemaining();
+    String getCat();
 
-    public void applySale(int amount);
-    public void removeAmount(int amount);
-    public void addAmount(int amount);
+    void applySale(int amount);
+    void removeAmount(int amount);
+    void addAmount(int amount);
+    void removeComponent(IProduct toRemove);
+    void replaceComponent (IProduct toReplace, IProduct with);
 
-    public String getRepresentation(int level);
-    public String getRepresentation(int level, boolean simplifiedRepresentation);
-    public boolean isComposedOf(IProduct product);
-    public boolean isSameProduct(IProduct product);
+    String getRepresentation(int level);
+    String getRepresentation(int level, boolean simplifiedRepresentation);
+    boolean isComposedOf(IProduct product);
+    boolean isSameProduct(IProduct product);
+    
 }

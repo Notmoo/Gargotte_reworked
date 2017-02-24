@@ -53,7 +53,15 @@ public class SimpleProduct implements IProduct {
     public void addAmount(int amount) {
         this.amountRemaining+=amount;
     }
-
+    
+    @Override
+    public void removeComponent (IProduct toRemove) {
+    }
+    
+    @Override
+    public void replaceComponent (IProduct toReplace, IProduct with) {
+    }
+    
     public String getRepresentation(int level){
         return getRepresentation(level, false);
     }
