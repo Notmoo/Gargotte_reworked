@@ -5,11 +5,10 @@ import com.cess.gargotte.core.model.products.IProduct;
 import com.cess.gargotte.gui.modules.ModuleUtils;
 import com.cess.gargotte.gui.modules.stock.ctrl.StockModuleCtrl;
 import javafx.application.Platform;
-import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.*;
+import javafx.collections.ListChangeListener;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
-import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -33,6 +32,8 @@ public class StockModuleView {
     
     private ToolBar rightToolbar;
     private VBox lockedStateControlsVBox, unlockedStateControlsVBox;
+    
+    private BooleanProperty listEmpty;
     
     public StockModuleView (StockModuleCtrl ctrl) {
         this.ctrl = ctrl;
@@ -73,6 +74,14 @@ public class StockModuleView {
         stockTable.getColumns().add(amountRemainingCol);
         stockTable.getColumns().add(amountSoldCol);
         
+        listEmpty = new SimpleBooleanProperty(StockModuleView.this.stockTable.getRoot().getChildren().size()==0);
+        this.stockTable.getRoot().getChildren().addListener(new ListChangeListener<TreeItem<IProduct>>() {
+            @Override
+            public void onChanged (final Change c) {
+                StockModuleView.this.listEmpty.set(StockModuleView.this.stockTable.getRoot().getChildren().size()==0);
+            }
+        });
+        
         mainPane.setCenter(stockTable);
         
         rightToolbar = new ToolBar();
@@ -81,9 +90,7 @@ public class StockModuleView {
         passwordField = new TextField();
         passwordField.setPromptText("Mot de passe");
         passwordField.setPrefSize(CONTROL_PREF_WIDTH, CONTROL_PREF_HEIGHT);
-        passwordField.setOnAction(event->{
-            this.ctrl.onUnlockAttempt(passwordField.getText());
-        });
+        passwordField.setOnAction(event->this.ctrl.onUnlockAttempt(passwordField.getText()));
     
         lockedStateControlsVBox = new VBox();
         lockedStateControlsVBox.getChildren().add(passwordField);
@@ -98,12 +105,12 @@ public class StockModuleView {
         Button editProductButton = new Button("Modifier");
         editProductButton.setPrefSize(CONTROL_PREF_WIDTH, CONTROL_PREF_HEIGHT);
         editProductButton.setOnAction(event-> this.ctrl.onEditProductRequest());
-        editProductButton.disableProperty().bind(this.stockTable.getSelectionModel().selectedItemProperty().isNull());
+        editProductButton.disableProperty().bind(this.stockTable.getSelectionModel().selectedItemProperty().isNull().or(listEmpty));
         
         Button removeProductButton = new Button("Supprimer");
         removeProductButton.setPrefSize(CONTROL_PREF_WIDTH, CONTROL_PREF_HEIGHT);
         removeProductButton.setOnAction(event-> this.ctrl.onRemoveProductRequest());
-        removeProductButton.disableProperty().bind(this.stockTable.getSelectionModel().selectedItemProperty().isNull());
+        removeProductButton.disableProperty().bind(this.stockTable.getSelectionModel().selectedItemProperty().isNull().or(listEmpty));
         
         unlockedStateControlsVBox.getChildren().addAll(addProductButton, editProductButton, removeProductButton);
         
