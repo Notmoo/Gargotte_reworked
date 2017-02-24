@@ -24,4 +24,8 @@ public interface IModel {
     void addStateListener(IModelListener l);
     void removeStateListener(IModelListener l);
     PaymentMethod getPaymentMethod ( );
+    
+    void replaceProduct (IProduct toReplace, IProduct with);
+    void addProduct(IProduct toAdd);
+    void removeProduct(IProduct toRemove);
 }

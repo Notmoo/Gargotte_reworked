@@ -151,4 +151,36 @@ public class GargotteModel implements IModel{
     public PaymentMethod getPaymentMethod ( ) {
         return paymentMethod;
     }
+    
+    @Override
+    public void replaceProduct (IProduct toReplace, IProduct with) {
+        for(IProduct product : new ArrayList<>(this.products)){
+            if(product.isSameProduct(toReplace)){
+                int index = this.products.indexOf(toReplace);
+                this.products.remove(toReplace);
+                this.products.add(index, with);
+            }else if(product.isComposedOf(toReplace)){
+                product.replaceComponent(toReplace, with);
+            }
+        }
+        this.dataEventFirerer.fireDataChangedEvent();
+    }
+    
+    @Override
+    public void addProduct (IProduct toAdd) {
+        this.products.add(toAdd);
+        this.dataEventFirerer.fireDataChangedEvent();
+    }
+    
+    @Override
+    public void removeProduct (IProduct toRemove) {
+        for(IProduct product : new ArrayList<>(this.products)){
+            if(product.isSameProduct(toRemove)){
+                this.products.remove(product);
+            }else if(product.isComposedOf(toRemove)){
+                product.removeComponent(toRemove);
+            }
+        }
+        this.dataEventFirerer.fireDataChangedEvent();
+    }
 }
