@@ -5,6 +5,7 @@ import com.cess.gargotte.core.model.products.IProduct;
 import com.cess.gargotte.core.model.sales.Order;
 import com.cess.gargotte.core.model.sales.PaymentMethod;
 
+import java.nio.file.Path;
 import java.util.List;
 
 /**
@@ -15,17 +16,23 @@ public interface IModel {
     List<IProduct> getProductsFromCat(final String cat);
     Order getCurrentOrder();
     List<String> getCatList();
-    boolean bufferSale(IProduct product);
-    boolean unbufferSale(IProduct product);
-    boolean setPaymentMethod(PaymentMethod paymentMethod);
-    boolean flushBufferedSales();
+    PaymentMethod getPaymentMethod ( );
+    
     void addDataListener(IModelListener l);
     void removeDataListener(IModelListener l);
     void addStateListener(IModelListener l);
     void removeStateListener(IModelListener l);
-    PaymentMethod getPaymentMethod ( );
+    
+    boolean setPaymentMethod(PaymentMethod paymentMethod);
+    
+    boolean bufferSale(IProduct product);
+    boolean unbufferSale(IProduct product);
+    boolean flushBufferedSales();
     
     void replaceProduct (IProduct toReplace, IProduct with);
     void addProduct(IProduct toAdd);
     void removeProduct(IProduct toRemove);
+    
+    Path getRessourceFilePath();
+    Path getOrderLogFilePath();
 }

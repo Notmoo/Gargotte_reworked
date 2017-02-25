@@ -189,4 +189,14 @@ public class GargotteModel implements IModel{
         this.ioHandler.write(this.products);
         this.dataEventFirerer.fireDataChangedEvent();
     }
+    
+    @Override
+    public Path getRessourceFilePath () {
+        return PRODUCT_FILE_PATH;
+    }
+    
+    @Override
+    public Path getOrderLogFilePath () {
+        return SALES_LOG_FILE_PATH;
+    }
 }
