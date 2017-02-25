@@ -3,6 +3,7 @@ package com.cess.gargotte.gui.modules.order;
 import com.cess.gargotte.core.model.GargotteModel;
 import com.cess.gargotte.core.model.IModel;
 import com.cess.gargotte.core.model.listeners.IModelListener;
+import com.cess.gargotte.core.model.listeners.ModelListenerAdapter;
 import com.cess.gargotte.gui.modules.IModule;
 import com.cess.gargotte.gui.modules.order.ctrl.OrderModuleCtrl;
 import com.cess.gargotte.gui.modules.order.view.OrderModuleView;
@@ -24,21 +25,13 @@ public class OrderModule implements IModule {
         
         this.ctrl.setView(view);
         
-        model.addDataListener(new IModelListener( ) {
+        model.addDataListener(new ModelListenerAdapter( ) {
             @Override
             public void onDataChangedEvent ( ) {
                 OrderModule.this.view.updateData();
             }
-    
-            @Override
-            public void onErrorEvent (Throwable e) {
-            }
         });
-        model.addStateListener(new IModelListener( ) {
-            @Override
-            public void onDataChangedEvent ( ) {
-            }
-    
+        model.addStateListener(new ModelListenerAdapter( ) {
             @Override
             public void onErrorEvent (Throwable e) {
                 OrderModule.this.ctrl.onErrorEvent(e);
