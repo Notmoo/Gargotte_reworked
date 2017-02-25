@@ -146,11 +146,11 @@ public class ProductEditionPopup {
         
         Node okButton = dialog.getDialogPane().lookupButton(okButtonType);
         okButton.addEventFilter(ActionEvent.ACTION, event->{
-            if((nameTextField.getText().isEmpty()
-                         || priceTextField.getText().isEmpty()
-                         || catComboBox.getValue().isEmpty()
-                         || amountRemainingTextField.getText().isEmpty()
-                         || amountSoldTextField.getText().isEmpty())){
+            if(nameTextField.getText().isEmpty()
+                || priceTextField.getText().isEmpty()
+                || catComboBox.getValue().isEmpty()
+                || amountSoldTextField.getText().isEmpty()
+                || (!ProductEditionPopup.hasComponents(listView) && amountRemainingTextField.getText().isEmpty())){
                 event.consume();
                 
                 Alert alert = new Alert(Alert.AlertType.ERROR, "Vous devez remplir tous les champs.");
@@ -172,10 +172,10 @@ public class ProductEditionPopup {
                 String name = nameTextField.getText();
                 String cat = catComboBox.getValue();
                 double price = Double.parseDouble(priceTextField.getText());
-                int amountRemaining = Integer.parseInt(amountRemainingTextField.getText());
                 int amountSold = Integer.parseInt(amountSoldTextField.getText());
             
                 if(components.size()==0){
+                    int amountRemaining = Integer.parseInt(amountRemainingTextField.getText());
                     return new SimpleProduct(name, cat, price, amountRemaining, amountSold);
                 }else{
                     return new ComposedProduct(name, cat, price, amountSold, components);
