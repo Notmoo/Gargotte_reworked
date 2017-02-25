@@ -4,6 +4,7 @@ import com.cess.gargotte.core.model.GargotteModel;
 import com.cess.gargotte.core.model.IModel;
 import com.cess.gargotte.gui.main_frame.MainFrame;
 import com.cess.gargotte.gui.modules.order.OrderModule;
+import com.cess.gargotte.gui.modules.sale_viewer.SaleViewerModule;
 import com.cess.gargotte.gui.modules.stock.StockModule;
 import javafx.application.Application;
 import javafx.stage.Stage;
@@ -24,6 +25,7 @@ public class Main extends Application{
         MainFrame mf = new MainFrame(primaryStage);
         mf.addModule(new OrderModule(model));
         mf.addModule(new StockModule(model));
+        mf.addModule(new SaleViewerModule(model));
         
         mf.show();
     }
