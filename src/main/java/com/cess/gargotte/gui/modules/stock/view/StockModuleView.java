@@ -9,6 +9,8 @@ import javafx.beans.property.*;
 import javafx.collections.ListChangeListener;
 import javafx.geometry.Orientation;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
@@ -34,9 +36,11 @@ public class StockModuleView {
     private VBox lockedStateControlsVBox, unlockedStateControlsVBox;
     
     private BooleanProperty listEmpty;
+    private BooleanProperty lockedState;
     
     public StockModuleView (StockModuleCtrl ctrl) {
         this.ctrl = ctrl;
+        lockedState = new SimpleBooleanProperty(true);
         
         this.mainPane = new BorderPane();
     
@@ -48,6 +52,16 @@ public class StockModuleView {
         
         stockTable = new TreeTableView<>();
         stockTable.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
+        stockTable.setRowFactory(tv->{
+            TreeTableRow<IProduct> row = new TreeTableRow<>();
+            row.addEventFilter(MouseEvent.MOUSE_CLICKED, event->{
+                if(!lockedState.getValue() && event.getClickCount()==2 && event.getButton() == MouseButton.PRIMARY){
+                    this.ctrl.onEditProductRequest();
+                }
+            });
+            return row;
+        });
+        
         TreeItem<IProduct> root = new TreeItem<>();
         stockTable.setRoot(root);
         stockTable.setShowRoot(false);
@@ -149,16 +163,27 @@ public class StockModuleView {
     }
     
     public void setViewUnlocked (boolean unlocked){
-        if(unlocked && this.rightToolbar.getItems().contains(lockedStateControlsVBox)){
-            this.rightToolbar.getItems().remove(lockedStateControlsVBox);
-            this.rightToolbar.getItems().add(unlockedStateControlsVBox);
-        }else if(!unlocked && this.rightToolbar.getItems().contains(unlockedStateControlsVBox)){
-            this.rightToolbar.getItems().remove(lockedStateControlsVBox);
-            this.rightToolbar.getItems().add(unlockedStateControlsVBox);
+        if(unlocked && this.lockedState.getValue()){
+            Platform.runLater(()->{
+                this.rightToolbar.getItems().remove(lockedStateControlsVBox);
+                this.rightToolbar.getItems().add(unlockedStateControlsVBox);
+            });
+            this.lockedState.set(!unlocked);
+        }else if(!unlocked && !this.lockedState.getValue()){
+            Platform.runLater(()->{
+                this.rightToolbar.getItems().remove(lockedStateControlsVBox);
+                this.rightToolbar.getItems().add(unlockedStateControlsVBox);
+            });
+            this.lockedState.set(!unlocked);
+        }else{
+            throw new IllegalStateException();
         }
     }
     
     public IProduct getSelectedProduct ( ) {
-        return this.stockTable.getSelectionModel().getSelectedItem().getValue();
+        if(this.stockTable.getSelectionModel().getSelectedItem()!=null)
+            return this.stockTable.getSelectionModel().getSelectedItem().getValue();
+        else
+            return null;
     }
 }

@@ -45,15 +45,19 @@ public class StockModuleCtrl {
     }
     
     public void onEditProductRequest ( ) {
-        Optional<IProduct> result = ProductEditionPopup.newPopup(this.view.getSelectedProduct(), model);
-        result.ifPresent(product -> {
-            model.replaceProduct(this.view.getSelectedProduct(), product);
-            this.view.changeActionInfoLabelText("Produit modifié", true);
-        });
+        if(this.view.getSelectedProduct()!=null) {
+            Optional<IProduct> result = ProductEditionPopup.newPopup(this.view.getSelectedProduct(), model);
+            result.ifPresent(product -> {
+                model.replaceProduct(this.view.getSelectedProduct(), product);
+                this.view.changeActionInfoLabelText("Produit modifié", true);
+            });
+        }
     }
     
     public void onRemoveProductRequest ( ) {
-        model.removeProduct(this.view.getSelectedProduct());
-        this.view.changeActionInfoLabelText("Produit retiré", true);
+        if(this.view.getSelectedProduct()!=null) {
+            model.removeProduct(this.view.getSelectedProduct());
+            this.view.changeActionInfoLabelText("Produit retiré", true);
+        }
     }
 }
