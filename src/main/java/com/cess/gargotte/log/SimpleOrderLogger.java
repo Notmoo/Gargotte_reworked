@@ -17,7 +17,7 @@ public class SimpleOrderLogger implements IOrderLogger {
 
     public SimpleOrderLogger (Path path, SaleLogSyntaxFactory syntaxFactory){
         this.path = path;
-        this.syntax = syntaxFactory.newInlineSimpleSyntax();
+        this.syntax = LogUtils.getSaleLogSyntax(syntaxFactory);
     }
 
     public boolean log(Order order) {

@@ -1,7 +1,5 @@
 package com.cess.gargotte.log;
 
-import com.cess.gargotte.core.model.sales.Sale;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -12,6 +10,7 @@ import java.util.Date;
 public class SaleLogSyntaxFactory {
     
     private static final Date DATE = new Date();
+    private static final String FIELD_SEPARATOR = "\t";
     private final DateFormat dateFormat;
     
      public SaleLogSyntaxFactory(){
@@ -22,7 +21,7 @@ public class SaleLogSyntaxFactory {
         return (sale, pm)->{
             StringBuffer sb = new StringBuffer();
 
-            sb.append(dateFormat.format(DATE)).append("\t").append(sale.getProduct().getName()).append("\t").append(sale.getAmount()).append("\t").append(sale.getProduct().getPrice()*sale.getAmount()).append("\t").append(pm);
+            sb.append(dateFormat.format(DATE)).append(FIELD_SEPARATOR).append(sale.getProduct().getName()).append(FIELD_SEPARATOR).append(sale.getAmount()).append(FIELD_SEPARATOR).append(sale.getProduct().getPrice()*sale.getAmount()).append(FIELD_SEPARATOR).append(pm);
 
             return sb.toString();
         };
