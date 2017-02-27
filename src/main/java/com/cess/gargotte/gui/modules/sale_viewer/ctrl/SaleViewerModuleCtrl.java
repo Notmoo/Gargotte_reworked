@@ -2,6 +2,7 @@ package com.cess.gargotte.gui.modules.sale_viewer.ctrl;
 
 import com.cess.gargotte.core.model.IModel;
 import com.cess.gargotte.gui.modules.sale_viewer.model.IObservableLog;
+import com.cess.gargotte.gui.modules.sale_viewer.model.SaleViewerModuleModel;
 import com.cess.gargotte.gui.modules.sale_viewer.view.SaleViewerModuleView;
 import javafx.scene.control.Alert;
 import javafx.stage.Modality;
@@ -14,10 +15,10 @@ import java.util.List;
  */
 public class SaleViewerModuleCtrl {
     
-    private IModel model;
+    private SaleViewerModuleModel model;
     private SaleViewerModuleView view;
     
-    public SaleViewerModuleCtrl (final IModel model) {
+    public SaleViewerModuleCtrl (final SaleViewerModuleModel model) {
         this.model = model;
     }
     
@@ -33,8 +34,7 @@ public class SaleViewerModuleCtrl {
     }
     
     public List<IObservableLog> getOrders (final int numberOfLogs){
-        //TODO écrire corps getter liste commandes
-        return new ArrayList<>();
+        return model.getLastOrders(numberOfLogs);
     }
     
     public void onRefreshRequest () {

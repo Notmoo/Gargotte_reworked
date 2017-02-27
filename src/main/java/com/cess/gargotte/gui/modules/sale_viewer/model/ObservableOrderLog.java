@@ -47,7 +47,7 @@ public class ObservableOrderLog implements IObservableLog{
     
     @Override
     public StringProperty price () {
-        return new SimpleStringProperty(Double.toString(totalPrice));
+        return new SimpleStringProperty(Double.toString(totalPrice)+"€");
     }
     
     @Override

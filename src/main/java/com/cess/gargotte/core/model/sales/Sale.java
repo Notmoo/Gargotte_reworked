@@ -22,4 +22,6 @@ public class Sale {
     public int getAmount() {
         return amount;
     }
+    
+    public double getPrice(){return product.getPrice()*amount;}
 }

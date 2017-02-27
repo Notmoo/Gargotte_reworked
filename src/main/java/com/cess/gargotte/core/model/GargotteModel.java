@@ -8,28 +8,26 @@ import com.cess.gargotte.core.model.sales.Order;
 import com.cess.gargotte.core.model.sales.PaymentMethod;
 import com.cess.gargotte.core.model.sales.ProductBuffer;
 import com.cess.gargotte.core.model.sales.Sale;
-import com.cess.gargotte.log.IOrderLogger;
-import com.cess.gargotte.log.SaleLogSyntaxFactory;
-import com.cess.gargotte.log.SimpleOrderLogger;
+import com.cess.gargotte.log.GargotteIOLogHandlerService;
+import com.cess.gargotte.log.IIOLogHandler;
 import com.cess.gargotte.reader.IIOHandler;
 import com.cess.gargotte.reader.SerIOHandler;
 
+import java.io.IOException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Consumer;
-import java.util.function.Predicate;
 
 /**
  * Created by Guillaume on 19/02/2017.
  */
 public class GargotteModel implements IModel{
 
-    private static final Path PRODUCT_FILE_PATH = Paths.get("produits.gargotte"), SALES_LOG_FILE_PATH = Paths.get("ventes.log");
+    private static final Path PRODUCT_FILE_PATH = Paths.get("produits.gargotte"), SALES_LOG_FILE_PATH = Paths.get("ventes.write");
 
     private IIOHandler ioHandler;
-    private IOrderLogger logger;
+    private IIOLogHandler logger;
     
     private List<IProduct> products;
     
@@ -40,9 +38,9 @@ public class GargotteModel implements IModel{
     private IModelFirerer modelStateFirerer;
 
 
-    public GargotteModel(){
+    public GargotteModel() throws IOException {
         ioHandler = new SerIOHandler(PRODUCT_FILE_PATH);
-        logger = new SimpleOrderLogger(SALES_LOG_FILE_PATH, new SaleLogSyntaxFactory());
+        logger = GargotteIOLogHandlerService.getInstance();
         productBuffer = new ProductBuffer();
 
         initProductList();
@@ -107,7 +105,7 @@ public class GargotteModel implements IModel{
        
        if(order.getSales().size()>0) {
            this.apply(order);
-           this.logger.log(order);
+           this.logger.write(order);
     
            this.productBuffer = new ProductBuffer( );
            paymentMethod = null;

@@ -1,7 +1,6 @@
 package com.cess.gargotte.gui.modules.sale_viewer.model;
 
 import com.cess.gargotte.core.model.products.IProduct;
-import com.cess.gargotte.core.model.sales.PaymentMethod;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -39,7 +38,7 @@ public class ObservableSaleLog implements IObservableLog{
     
     @Override
     public StringProperty price () {
-        return new SimpleStringProperty(Double.toString(totalPrice));
+        return new SimpleStringProperty(Double.toString(totalPrice)+"€");
     }
     
     @Override

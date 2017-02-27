@@ -62,7 +62,7 @@ public class SaleViewerModuleView {
         this.logTable.getColumns().add(priceCol);
     
         TreeTableColumn<IObservableLog, String> paymentMethodCol = new TreeTableColumn<>("Règlement");
-        priceCol.setCellValueFactory(cell->cell.getValue().getValue().paymentMethod());
+        paymentMethodCol.setCellValueFactory(cell->cell.getValue().getValue().paymentMethod());
         this.logTable.getColumns().add(paymentMethodCol);
         
         this.mainPane.setCenter(logTable);
@@ -95,7 +95,7 @@ public class SaleViewerModuleView {
                 logTable.getRoot().getChildren().addAll(newContent);
             });
         }catch(NumberFormatException e){
-            
+            this.ctrl.onError(e);
         }
     }
     
