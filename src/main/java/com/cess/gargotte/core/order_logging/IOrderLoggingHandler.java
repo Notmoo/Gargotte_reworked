@@ -1,4 +1,4 @@
-package com.cess.gargotte.log;
+package com.cess.gargotte.core.order_logging;
 
 import com.cess.gargotte.core.model.products.IProduct;
 import com.cess.gargotte.core.model.sales.Order;
@@ -9,7 +9,7 @@ import java.util.List;
 /**
  * Created by Guillaume on 19/02/2017.
  */
-public interface IIOLogHandler {
+public interface IOrderLoggingHandler {
     
     /**
      * Ecrit la commande {@code order} dans le fichier de logs des ventes.
@@ -21,7 +21,7 @@ public interface IIOLogHandler {
     boolean write (Order order);
     
     /**
-     * <p>Compte le nombre de commandes contenues dans le fichier de log et renvoie
+     * <p>Compte le nombre de commandes contenues dans le fichier de order_logging et renvoie
      * le résultat sous forme d'un entier de type long. Si le résultat est supérieur
      * à {@link Long#MAX_VALUE}, alors {@link Long#MAX_VALUE} est renvoyé. Le nombre
      * renvoyé ne peut pas être inférieur à 0.</p>

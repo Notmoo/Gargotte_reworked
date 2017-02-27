@@ -1,15 +1,15 @@
-package com.cess.gargotte.log.factory;
+package com.cess.gargotte.core.order_logging.factory;
 
 import com.cess.gargotte.core.model.products.IProduct;
 import com.cess.gargotte.core.model.products.SimpleProduct;
 import com.cess.gargotte.core.model.sales.Order;
 import com.cess.gargotte.core.model.sales.PaymentMethod;
 import com.cess.gargotte.core.model.sales.Sale;
-import com.cess.gargotte.log.exceptions.UnknownProductException;
-import com.cess.gargotte.log.factory.log.IOrderLogReader;
-import com.cess.gargotte.log.factory.log.IOrderLogWriter;
-import com.cess.gargotte.log.factory.log.ISaleLogReader;
-import com.cess.gargotte.log.factory.log.ISaleLogWriter;
+import com.cess.gargotte.core.order_logging.exceptions.UnknownProductException;
+import com.cess.gargotte.core.order_logging.factory.log.IOrderLogReader;
+import com.cess.gargotte.core.order_logging.factory.log.IOrderLogWriter;
+import com.cess.gargotte.core.order_logging.factory.log.ISaleLogReader;
+import com.cess.gargotte.core.order_logging.factory.log.ISaleLogWriter;
 
 import java.util.ArrayList;
 import java.util.List;

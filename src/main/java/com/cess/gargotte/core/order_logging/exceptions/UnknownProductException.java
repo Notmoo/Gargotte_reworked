@@ -1,4 +1,4 @@
-package com.cess.gargotte.log.exceptions;
+package com.cess.gargotte.core.order_logging.exceptions;
 
 /**
  * Created by Guillaume on 27/02/2017.

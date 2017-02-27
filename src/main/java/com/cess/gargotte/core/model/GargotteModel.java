@@ -8,10 +8,10 @@ import com.cess.gargotte.core.model.sales.Order;
 import com.cess.gargotte.core.model.sales.PaymentMethod;
 import com.cess.gargotte.core.model.sales.ProductBuffer;
 import com.cess.gargotte.core.model.sales.Sale;
-import com.cess.gargotte.log.GargotteIOLogHandlerService;
-import com.cess.gargotte.log.IIOLogHandler;
-import com.cess.gargotte.reader.IIOHandler;
-import com.cess.gargotte.reader.SerIOHandler;
+import com.cess.gargotte.core.order_logging.GargotteOrderLoggingService;
+import com.cess.gargotte.core.order_logging.IOrderLoggingHandler;
+import com.cess.gargotte.core.src_file_handler.ISrcFileHandler;
+import com.cess.gargotte.core.src_file_handler.SerSrcFileHandler;
 
 import java.io.IOException;
 import java.nio.file.Path;
@@ -26,8 +26,8 @@ public class GargotteModel implements IModel{
 
     private static final Path PRODUCT_FILE_PATH = Paths.get("produits.gargotte"), SALES_LOG_FILE_PATH = Paths.get("ventes.write");
 
-    private IIOHandler ioHandler;
-    private IIOLogHandler logger;
+    private ISrcFileHandler ioHandler;
+    private IOrderLoggingHandler logger;
     
     private List<IProduct> products;
     
@@ -39,8 +39,8 @@ public class GargotteModel implements IModel{
 
 
     public GargotteModel() throws IOException {
-        ioHandler = new SerIOHandler(PRODUCT_FILE_PATH);
-        logger = GargotteIOLogHandlerService.getInstance();
+        ioHandler = new SerSrcFileHandler(PRODUCT_FILE_PATH);
+        logger = GargotteOrderLoggingService.getInstance();
         productBuffer = new ProductBuffer();
 
         initProductList();
@@ -53,6 +53,7 @@ public class GargotteModel implements IModel{
         products = ioHandler.read();
     }
 
+    //TODO Modifier le retour pour renvoyer des produits "read-only"
     public List<IProduct> getProducts() {
         return products;
     }

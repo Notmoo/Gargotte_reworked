@@ -1,4 +1,4 @@
-package com.cess.gargotte.reader;
+package com.cess.gargotte.core.src_file_handler;
 
 import com.cess.gargotte.core.model.products.IProduct;
 
@@ -11,11 +11,11 @@ import java.util.List;
 /**
  * Created by Guillaume on 19/02/2017.
  */
-public class SerIOHandler implements IIOHandler{
+public class SerSrcFileHandler implements ISrcFileHandler {
 
     private final Path path;
 
-    public SerIOHandler(Path path){
+    public SerSrcFileHandler (Path path){
         this.path = path;
     }
 

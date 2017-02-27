@@ -3,7 +3,7 @@ package com.cess.gargotte.gui.modules.sale_viewer.model;
 import com.cess.gargotte.core.model.IModel;
 import com.cess.gargotte.core.model.sales.Order;
 import com.cess.gargotte.core.model.sales.Sale;
-import com.cess.gargotte.log.GargotteIOLogHandlerService;
+import com.cess.gargotte.core.order_logging.GargotteOrderLoggingService;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -22,7 +22,7 @@ public class SaleViewerModuleModel {
     
     public List<IObservableLog> getLastOrders (final int number) {
         try {
-            List<Order> orders = GargotteIOLogHandlerService.getInstance().read(model.getProducts(), number);
+            List<Order> orders = GargotteOrderLoggingService.getInstance().read(model.getProducts(), number);
             
             List<IObservableLog> reply = new ArrayList<>();
             for(Order order : orders){

@@ -1,4 +1,4 @@
-package com.cess.gargotte.log.factory.log;
+package com.cess.gargotte.core.order_logging.factory.log;
 
 import com.cess.gargotte.core.model.products.IProduct;
 import com.cess.gargotte.core.model.sales.Order;

@@ -1,10 +1,10 @@
-package com.cess.gargotte.log;
+package com.cess.gargotte.core.order_logging;
 
 import com.cess.gargotte.core.model.products.IProduct;
 import com.cess.gargotte.core.model.sales.Order;
-import com.cess.gargotte.log.factory.IIOFactoryParameters;
-import com.cess.gargotte.log.factory.SimpleIOFactoryParameters;
-import com.cess.gargotte.log.factory.SimpleIOLogFactory;
+import com.cess.gargotte.core.order_logging.factory.IIOFactoryParameters;
+import com.cess.gargotte.core.order_logging.factory.SimpleIOFactoryParameters;
+import com.cess.gargotte.core.order_logging.factory.SimpleIOLogFactory;
 
 import java.io.*;
 import java.nio.file.Files;
@@ -17,15 +17,15 @@ import java.util.List;
 /**
  * Created by Guillaume on 25/02/2017.
  */
-public final class GargotteIOLogHandlerService implements IIOLogHandler{
+public final class GargotteOrderLoggingService implements IOrderLoggingHandler {
     
-    private static GargotteIOLogHandlerService INSTANCE = null;
+    private static GargotteOrderLoggingService INSTANCE = null;
     
     private final Path path;
     private final SimpleIOLogFactory factory;
     private final IIOFactoryParameters params;
     
-    private GargotteIOLogHandlerService (final String filePathStr) throws IOException {
+    private GargotteOrderLoggingService (final String filePathStr) throws IOException {
         path = Paths.get(filePathStr);
         if(!Files.exists(path))
             Files.createFile(path);
@@ -33,9 +33,9 @@ public final class GargotteIOLogHandlerService implements IIOLogHandler{
         factory = new SimpleIOLogFactory(params);
     }
     
-    public static GargotteIOLogHandlerService getInstance() throws IOException{
+    public static GargotteOrderLoggingService getInstance() throws IOException{
         if(INSTANCE == null){
-            INSTANCE = new GargotteIOLogHandlerService("ventes.log");
+            INSTANCE = new GargotteOrderLoggingService("ventes.order_logging");
         }
         return INSTANCE;
     }
