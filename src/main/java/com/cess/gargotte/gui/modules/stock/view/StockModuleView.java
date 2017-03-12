@@ -1,7 +1,8 @@
 package com.cess.gargotte.gui.modules.stock.view;
 
 import com.cess.gargotte.core.model.products.ComposedProduct;
-import com.cess.gargotte.core.model.products.IProduct;
+import com.cess.gargotte.core.model.products.ComposedReadOnlyProduct;
+import com.cess.gargotte.core.model.products.IReadOnlyProduct;
 import com.cess.gargotte.gui.modules.ModuleUtils;
 import com.cess.gargotte.gui.modules.stock.ctrl.StockModuleCtrl;
 import javafx.application.Platform;
@@ -27,7 +28,7 @@ public class StockModuleView {
     
     private StockModuleCtrl ctrl;
     private BorderPane mainPane;
-    private TreeTableView<IProduct> stockTable;
+    private TreeTableView<IReadOnlyProduct> stockTable;
     
     private Label actionInfoLabel;
     private TextField passwordField;
@@ -53,7 +54,7 @@ public class StockModuleView {
         stockTable = new TreeTableView<>();
         stockTable.setColumnResizePolicy(TreeTableView.CONSTRAINED_RESIZE_POLICY);
         stockTable.setRowFactory(tv->{
-            TreeTableRow<IProduct> row = new TreeTableRow<>();
+            TreeTableRow<IReadOnlyProduct> row = new TreeTableRow<>();
             row.addEventFilter(MouseEvent.MOUSE_CLICKED, event->{
                 if(!lockedState.getValue() && event.getClickCount()==2 && event.getButton() == MouseButton.PRIMARY){
                     this.ctrl.onEditProductRequest();
@@ -62,24 +63,24 @@ public class StockModuleView {
             return row;
         });
         
-        TreeItem<IProduct> root = new TreeItem<>();
+        TreeItem<IReadOnlyProduct> root = new TreeItem<>();
         stockTable.setRoot(root);
         stockTable.setShowRoot(false);
         stockTable.setEditable(false);
         
-        TreeTableColumn<IProduct, String> nameCol = new TreeTableColumn<>("Nom");
+        TreeTableColumn<IReadOnlyProduct, String> nameCol = new TreeTableColumn<>("Nom");
         nameCol.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getValue().getName()));
         
-        TreeTableColumn<IProduct, String> catCol = new TreeTableColumn<>("Catégorie");
+        TreeTableColumn<IReadOnlyProduct, String> catCol = new TreeTableColumn<>("Catégorie");
         catCol.setCellValueFactory(cell -> new SimpleStringProperty(cell.getValue().getValue().getCat()));
         
-        TreeTableColumn<IProduct, String> priceCol = new TreeTableColumn<>("Prix");
+        TreeTableColumn<IReadOnlyProduct, String> priceCol = new TreeTableColumn<>("Prix");
         priceCol.setCellValueFactory(cell -> new SimpleStringProperty(String.format("%.2f€",cell.getValue().getValue().getPrice())));
         
-        TreeTableColumn<IProduct, String> amountRemainingCol = new TreeTableColumn<>("En stock");
+        TreeTableColumn<IReadOnlyProduct, String> amountRemainingCol = new TreeTableColumn<>("En stock");
         amountRemainingCol.setCellValueFactory(cell -> new SimpleStringProperty(Integer.toString(cell.getValue().getValue().getAmountRemaining())));
         
-        TreeTableColumn<IProduct, String> amountSoldCol = new TreeTableColumn<>("Vendu");
+        TreeTableColumn<IReadOnlyProduct, String> amountSoldCol = new TreeTableColumn<>("Vendu");
         amountSoldCol.setCellValueFactory(cell -> new SimpleStringProperty(Integer.toString(cell.getValue().getValue().getAmountSold())));
         
         stockTable.getColumns().add(nameCol);
@@ -89,7 +90,7 @@ public class StockModuleView {
         stockTable.getColumns().add(amountSoldCol);
         
         listEmpty = new SimpleBooleanProperty(StockModuleView.this.stockTable.getRoot().getChildren().size()==0);
-        this.stockTable.getRoot().getChildren().addListener(new ListChangeListener<TreeItem<IProduct>>() {
+        this.stockTable.getRoot().getChildren().addListener(new ListChangeListener<TreeItem<IReadOnlyProduct>>() {
             @Override
             public void onChanged (final Change c) {
                 StockModuleView.this.listEmpty.set(StockModuleView.this.stockTable.getRoot().getChildren().size()==0);
@@ -136,20 +137,20 @@ public class StockModuleView {
     }
     
     public void updateData(){
-        List<TreeItem<IProduct>> items = this.generateTreeItems(this.ctrl.getProducts());
+        List<TreeItem<IReadOnlyProduct>> items = this.generateTreeItems(this.ctrl.getProducts());
         Platform.runLater(()->{
             this.stockTable.getRoot().getChildren().clear();
             this.stockTable.getRoot().getChildren().addAll(items);
         });
     }
     
-    private List<TreeItem<IProduct>> generateTreeItems (List<IProduct> products) {
-        List<TreeItem<IProduct>> reply = new ArrayList<>();
+    private List<TreeItem<IReadOnlyProduct>> generateTreeItems (List<IReadOnlyProduct> products) {
+        List<TreeItem<IReadOnlyProduct>> reply = new ArrayList<>();
         
-        for(IProduct product : products){
-            TreeItem<IProduct> item = new TreeItem<>(product);
+        for(IReadOnlyProduct product : products){
+            TreeItem<IReadOnlyProduct> item = new TreeItem<>(product);
             if(product.getClass().equals(ComposedProduct.class)){
-                item.getChildren().addAll(generateTreeItems(((ComposedProduct)product).getComponents()));
+                item.getChildren().addAll(generateTreeItems(((ComposedReadOnlyProduct)product).getComponents()));
             }
             reply.add(item);
         }
@@ -180,7 +181,7 @@ public class StockModuleView {
         }
     }
     
-    public IProduct getSelectedProduct ( ) {
+    public IReadOnlyProduct getSelectedProduct ( ) {
         if(this.stockTable.getSelectionModel().getSelectedItem()!=null)
             return this.stockTable.getSelectionModel().getSelectedItem().getValue();
         else

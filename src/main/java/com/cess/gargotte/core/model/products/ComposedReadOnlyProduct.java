@@ -4,19 +4,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by Guillaume on 15/02/2017.
+ * Created by Guillaume on 28/02/2017.
  */
-public class ComposedProduct implements IProduct {
-
+public class ComposedReadOnlyProduct implements IReadOnlyProduct {
+    
     private static final long serialVersionUID = 1L;
-
+    
     private final String name;
     private final String category;
     private final double price;
     private int amountSold;
-    private final List<IProduct> components;
-
-    public ComposedProduct(String name, String category, double price, int amountSold, List<IProduct> components){
+    private final List<IReadOnlyProduct> components;
+    
+    public ComposedReadOnlyProduct(String name, String category, double price, int amountSold, List<IReadOnlyProduct> components){
         this.name = name;
         this.category = category;
         this.price = price;
@@ -60,56 +60,12 @@ public class ComposedProduct implements IProduct {
         return category;
     }
     
-    public List<IProduct> getComponents(){
+    public List<IReadOnlyProduct> getComponents(){
         return components;
     }
     
-    @Override
-    public void applySale(int amount) {
-        this.removeAmount(amount);
-        this.amountSold+=amount;
-    }
-    
-    @Override
-    public void removeAmount(int amount){
-        for(IProduct component : components){
-            component.removeAmount(amount);
-        }
-    }
-    
-    @Override
-    public void addAmount(int amount){
-        for(IProduct component : components){
-            component.addAmount(amount);
-        }
-    }
-    
-    @Override
-    public void removeComponent (IProduct toRemove) {
-        for(IProduct product : new ArrayList<>(components)){
-            if(product.isSameProduct(toRemove)){
-                this.components.remove(product);
-            }else if(product.isComposedOf(toRemove)){
-                product.removeComponent(toRemove);
-            }
-        }
-    }
-    
-    @Override
-    public void replaceComponent (IProduct toReplace, IProduct with) {
-        for(IProduct product : new ArrayList<>(components)){
-            if(product.isSameProduct(toReplace)){
-                int index = this.components.indexOf(toReplace);
-                this.components.remove(toReplace);
-                this.components.add(index, with);
-            }else if(product.isComposedOf(toReplace)){
-                product.replaceComponent(toReplace, with);
-            }
-        }
-    }
-    
     public String getRepresentation(int level){
-       return getRepresentation(level, false);
+        return getRepresentation(level, false);
     }
     
     @Override
@@ -118,7 +74,7 @@ public class ComposedProduct implements IProduct {
         for(int i =0; i<level;i++){
             sb.append("\t");
         }
-    
+        
         sb.append(name).append("\t");
         sb.append(String.format("%.2f€", price)).append("\t");
         if(!simplifiedRepresentation) {
@@ -129,7 +85,7 @@ public class ComposedProduct implements IProduct {
         
         if(components.size()>0) {
             sb.append("\n");
-            for (IProduct component : components) {
+            for (IReadOnlyProduct component : components) {
                 sb.append(component.getRepresentation(level + 1, simplifiedRepresentation)).append("\n");
             }
         }
@@ -137,11 +93,11 @@ public class ComposedProduct implements IProduct {
     }
     
     @Override
-    public boolean isComposedOf (IProduct product) {
+    public boolean isComposedOf (IReadOnlyProduct product) {
         if(isSameProduct(product)){
             return true;
         }else{
-            for(IProduct component : components){
+            for(IReadOnlyProduct component : components){
                 if(component.isComposedOf(product))
                     return true;
             }
@@ -150,9 +106,9 @@ public class ComposedProduct implements IProduct {
     }
     
     @Override
-    public boolean isSameProduct (IProduct product) {
-        if(product.getClass().equals(ComposedProduct.class)){
-            ComposedProduct cp = (ComposedProduct) product;
+    public boolean isSameProduct (IReadOnlyProduct product) {
+        if(product.getClass().equals(ComposedReadOnlyProduct.class)){
+            ComposedReadOnlyProduct cp = (ComposedReadOnlyProduct) product;
             boolean state = this.name.equals(product.getName()) && this.price==product.getPrice();
             boolean components = this.components.size()==cp.components.size();
             if(components){

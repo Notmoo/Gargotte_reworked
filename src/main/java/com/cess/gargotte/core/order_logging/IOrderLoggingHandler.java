@@ -1,6 +1,6 @@
 package com.cess.gargotte.core.order_logging;
 
-import com.cess.gargotte.core.model.products.IProduct;
+import com.cess.gargotte.core.model.products.IReadOnlyProduct;
 import com.cess.gargotte.core.model.sales.Order;
 
 import java.io.IOException;
@@ -44,7 +44,7 @@ public interface IOrderLoggingHandler {
      * @return
      * @throws IOException
      */
-    List<Order> read(List<IProduct> products) throws IOException;
+    List<Order> read(List<IReadOnlyProduct> products) throws IOException;
     
     /**
      * <p>Lit les {@code number} dernières commandes qui ont été ajoutées au fichier de logs des ventes.</p>
@@ -60,5 +60,5 @@ public interface IOrderLoggingHandler {
      * @return
      * @throws IOException
      */
-    List<Order> read(List<IProduct> products, long number) throws IOException;
+    List<Order> read(List<IReadOnlyProduct> products, long number) throws IOException;
 }

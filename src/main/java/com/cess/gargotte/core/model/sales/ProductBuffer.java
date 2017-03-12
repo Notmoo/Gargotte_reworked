@@ -1,7 +1,8 @@
 package com.cess.gargotte.core.model.sales;
 
 import com.cess.gargotte.core.model.products.ComposedProduct;
-import com.cess.gargotte.core.model.products.IProduct;
+import com.cess.gargotte.core.model.products.ComposedReadOnlyProduct;
+import com.cess.gargotte.core.model.products.IReadOnlyProduct;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -13,13 +14,13 @@ import java.util.Map;
  */
 public class ProductBuffer {
 
-    private Map<IProduct, Integer> content;
+    private Map<IReadOnlyProduct, Integer> content;
 
     public ProductBuffer(){
         content = new HashMap<>();
     }
     
-    public boolean addProduct(IProduct product){
+    public boolean addProduct(IReadOnlyProduct product){
         boolean reply = false;
         if(this.getRemainingAmount(product)>0) {
             if ( this.content.containsKey(product) ) {
@@ -41,9 +42,9 @@ public class ProductBuffer {
      * @param product Produit à utiliser pour le compte
      * @return Nombre d'éléments dénombrés
      */
-    private int getBufferedAmount (IProduct product) {
+    private int getBufferedAmount (IReadOnlyProduct product) {
         int amount = 0;
-        for(IProduct currProduct : this.content.keySet()){
+        for(IReadOnlyProduct currProduct : this.content.keySet()){
             if(currProduct.isComposedOf(product))
                 amount+=content.get(currProduct);
         }
@@ -57,12 +58,12 @@ public class ProductBuffer {
      * @param product Produit à utiliser pour le compte
      * @return Nombre d'éléments dénombrés
      */
-    private int getRemainingAmount (IProduct product) {
+    private int getRemainingAmount (IReadOnlyProduct product) {
         int remainingAmount = product.getAmountRemaining()- getBufferedAmount(product);
         
-        if(product.getClass().equals(ComposedProduct.class)){
-            ComposedProduct cp = (ComposedProduct) product;
-            for(IProduct component : cp.getComponents()){
+        if(product.getClass().equals(ComposedReadOnlyProduct.class)){
+            ComposedReadOnlyProduct cp = (ComposedReadOnlyProduct) product;
+            for(IReadOnlyProduct component : cp.getComponents()){
                 remainingAmount = Math.min(remainingAmount, getRemainingAmount(component));
             }
         }
@@ -70,7 +71,7 @@ public class ProductBuffer {
         return remainingAmount;
     }
     
-    public boolean removeProduct(IProduct product){
+    public boolean removeProduct(IReadOnlyProduct product){
         if(this.content.containsKey(product)){
             if(this.content.get(product)==1){
                 this.content.remove(product);
@@ -88,7 +89,7 @@ public class ProductBuffer {
     
     public Order makeOrder(PaymentMethod paymentMethod){
         List<Sale> sales = new ArrayList<>();
-        for(IProduct product : content.keySet()){
+        for(IReadOnlyProduct product : content.keySet()){
             sales.add(new Sale(product, this.content.get(product)));
         }
         return new Order(sales, paymentMethod);

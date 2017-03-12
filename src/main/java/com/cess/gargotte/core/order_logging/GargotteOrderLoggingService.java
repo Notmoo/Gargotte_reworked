@@ -1,6 +1,6 @@
 package com.cess.gargotte.core.order_logging;
 
-import com.cess.gargotte.core.model.products.IProduct;
+import com.cess.gargotte.core.model.products.IReadOnlyProduct;
 import com.cess.gargotte.core.model.sales.Order;
 import com.cess.gargotte.core.order_logging.factory.IIOFactoryParameters;
 import com.cess.gargotte.core.order_logging.factory.SimpleIOFactoryParameters;
@@ -85,12 +85,12 @@ public final class GargotteOrderLoggingService implements IOrderLoggingHandler {
     }
     
     @Override
-    public List<Order> read (final List<IProduct> products) throws IOException {
+    public List<Order> read (final List<IReadOnlyProduct> products) throws IOException {
         return read(products, count());
     }
     
     @Override
-    public List<Order> read (final List<IProduct> products, final long number)  throws IOException {
+    public List<Order> read (final List<IReadOnlyProduct> products, final long number) throws IOException {
         List<Order> orders = new ArrayList<>();
         try (FileReader fr = new FileReader(path.toString());
              BufferedReader br = new BufferedReader(fr)) {

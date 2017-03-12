@@ -1,21 +1,21 @@
 package com.cess.gargotte.core.model.sales;
 
-import com.cess.gargotte.core.model.products.IProduct;
+import com.cess.gargotte.core.model.products.IReadOnlyProduct;
 
 /**
  * Created by Guillaume on 20/02/2017.
  */
 public class Sale {
 
-    private final IProduct product;
+    private final IReadOnlyProduct product;
     private final int amount;
 
-    public Sale(IProduct product, int amount){
+    public Sale(IReadOnlyProduct product, int amount){
         this.product = product;
         this.amount = amount;
     }
 
-    public IProduct getProduct() {
+    public IReadOnlyProduct getProduct() {
         return product;
     }
 

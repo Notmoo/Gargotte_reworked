@@ -1,6 +1,6 @@
 package com.cess.gargotte.gui.modules.sale_viewer.model;
 
-import com.cess.gargotte.core.model.products.IProduct;
+import com.cess.gargotte.core.model.products.IReadOnlyProduct;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.beans.property.StringProperty;
 
@@ -11,11 +11,11 @@ import java.util.List;
  */
 public class ObservableSaleLog implements IObservableLog{
     
-    private IProduct product;
+    private IReadOnlyProduct product;
     private int amount;
     private double totalPrice;
     
-    public ObservableSaleLog(IProduct product, int amount, double totalPrice){
+    public ObservableSaleLog(IReadOnlyProduct product, int amount, double totalPrice){
         this.product = product;
         this.amount = amount;
         this.totalPrice = totalPrice;

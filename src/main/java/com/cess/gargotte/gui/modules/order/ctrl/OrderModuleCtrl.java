@@ -1,7 +1,7 @@
 package com.cess.gargotte.gui.modules.order.ctrl;
 
 import com.cess.gargotte.core.model.IModel;
-import com.cess.gargotte.core.model.products.IProduct;
+import com.cess.gargotte.core.model.products.IReadOnlyProduct;
 import com.cess.gargotte.core.model.sales.PaymentMethod;
 import com.cess.gargotte.core.model.sales.Sale;
 import com.cess.gargotte.gui.modules.order.view.OrderModuleView;
@@ -33,7 +33,7 @@ public class OrderModuleCtrl {
         return model.getCatList();
     }
     
-    public List<IProduct> getProducts (String category) {
+    public List<IReadOnlyProduct> getProducts (String category) {
         return this.model.getProductsFromCat(category);
     }
     
@@ -50,7 +50,7 @@ public class OrderModuleCtrl {
         return price;
     }
     
-    public void onAddProductToSaleRequest (IProduct product) {
+    public void onAddProductToSaleRequest (IReadOnlyProduct product) {
         if(product!=null){
             boolean success = this.model.bufferSale(product);
             if(success){

@@ -1,7 +1,7 @@
 package com.cess.gargotte.gui.modules.stock.ctrl;
 
 import com.cess.gargotte.core.model.IModel;
-import com.cess.gargotte.core.model.products.IProduct;
+import com.cess.gargotte.core.model.products.IReadOnlyProduct;
 import com.cess.gargotte.gui.modules.stock.popup.ProductEditionPopup;
 import com.cess.gargotte.gui.modules.stock.view.StockModuleView;
 
@@ -26,7 +26,7 @@ public class StockModuleCtrl {
         this.view = view;
     }
     
-    public List<IProduct> getProducts ( ) {
+    public List<IReadOnlyProduct> getProducts ( ) {
         return model.getProducts();
     }
     
@@ -37,7 +37,7 @@ public class StockModuleCtrl {
     }
     
     public void onAddProductRequest ( ) {
-        Optional<IProduct> result = ProductEditionPopup.newPopup(null, model);
+        Optional<IReadOnlyProduct> result = ProductEditionPopup.newPopup(null, model);
         result.ifPresent((product)->{
             model.addProduct(product);
             this.view.changeActionInfoLabelText("Produit ajouté", true);
@@ -46,7 +46,7 @@ public class StockModuleCtrl {
     
     public void onEditProductRequest ( ) {
         if(this.view.getSelectedProduct()!=null) {
-            Optional<IProduct> result = ProductEditionPopup.newPopup(this.view.getSelectedProduct(), model);
+            Optional<IReadOnlyProduct> result = ProductEditionPopup.newPopup(this.view.getSelectedProduct(), model);
             result.ifPresent(product -> {
                 model.replaceProduct(this.view.getSelectedProduct(), product);
                 this.view.changeActionInfoLabelText("Produit modifié", true);

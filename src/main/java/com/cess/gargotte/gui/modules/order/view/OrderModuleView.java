@@ -1,6 +1,6 @@
 package com.cess.gargotte.gui.modules.order.view;
 
-import com.cess.gargotte.core.model.products.IProduct;
+import com.cess.gargotte.core.model.products.IReadOnlyProduct;
 import com.cess.gargotte.core.model.sales.PaymentMethod;
 import com.cess.gargotte.core.model.sales.Sale;
 import com.cess.gargotte.gui.modules.ModuleUtils;
@@ -127,12 +127,12 @@ public class OrderModuleView {
     private ProductListViewGUIComponent newProductListComponent (String catName ) {
         ProductListViewGUIComponent list = new ProductListViewGUIComponent(catName);
         
-        list.setCellFactory((product)->new ListCell<IProduct>(){
+        list.setCellFactory((product)->new ListCell<IReadOnlyProduct>(){
                 
                 private Tooltip tooltip;
                 
                 @Override
-                protected void updateItem (IProduct item, boolean empty) {
+                protected void updateItem (IReadOnlyProduct item, boolean empty) {
                     super.updateItem(item, empty);
                     if ( empty || item == null ) {
                         this.setText(null);
@@ -144,7 +144,7 @@ public class OrderModuleView {
                     this.updateTooltip(item, empty);
                 }
     
-                private void updateTooltip (IProduct item, boolean empty) {
+                private void updateTooltip (IReadOnlyProduct item, boolean empty) {
                     if(empty && item==null){
                         this.tooltip = null;
                         super.setTooltip(null);

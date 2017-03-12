@@ -1,9 +1,7 @@
 package com.cess.gargotte.gui.modules.stock.popup;
 
 import com.cess.gargotte.core.model.IModel;
-import com.cess.gargotte.core.model.products.ComposedProduct;
-import com.cess.gargotte.core.model.products.IProduct;
-import com.cess.gargotte.core.model.products.SimpleProduct;
+import com.cess.gargotte.core.model.products.*;
 import javafx.application.Platform;
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.SimpleBooleanProperty;
@@ -32,9 +30,9 @@ public class ProductEditionPopup {
     private ProductEditionPopup(){
     }
     
-    public static Optional<IProduct> newPopup(final IProduct initialProduct, final IModel model){
+    public static Optional<IReadOnlyProduct> newPopup(final IReadOnlyProduct initialProduct, final IModel model){
         
-        Dialog<IProduct> dialog = new Dialog<>();
+        Dialog<IReadOnlyProduct> dialog = new Dialog<>();
 
         ButtonType okButtonType = new ButtonType("Valider", ButtonBar.ButtonData.OK_DONE);
         ButtonType koButtonType = new ButtonType("Annuler", ButtonBar.ButtonData.CANCEL_CLOSE);
@@ -92,8 +90,8 @@ public class ProductEditionPopup {
     
             @Override
             public CheckableProduct fromString (String productName) {
-                IProduct reply = null;
-                for(IProduct currentProduct : model.getProducts()){
+                IReadOnlyProduct reply = null;
+                for(IReadOnlyProduct currentProduct : model.getProducts()){
                     if(productName.equals(currentProduct.getName())){
                         reply = currentProduct;
                         break;
@@ -162,7 +160,7 @@ public class ProductEditionPopup {
         
         dialog.setResultConverter(dialogButton -> {
             if(dialogButton.equals(okButtonType)){
-                List<IProduct> components = new ArrayList<>();
+                List<IReadOnlyProduct> components = new ArrayList<>();
                 for(CheckableProduct cp : listView.getItems()) {
                     if ( cp.checked.getValue( ) ) {
                         components.add(cp.product);
@@ -176,9 +174,9 @@ public class ProductEditionPopup {
             
                 if(components.size()==0){
                     int amountRemaining = Integer.parseInt(amountRemainingTextField.getText());
-                    return new SimpleProduct(name, cat, price, amountRemaining, amountSold);
+                    return new SimpleReadOnlyProduct(name, cat, price, amountRemaining, amountSold);
                 }else{
-                    return new ComposedProduct(name, cat, price, amountSold, components);
+                    return new ComposedReadOnlyProduct(name, cat, price, amountSold, components);
                 }
             }
             return null;
@@ -208,10 +206,10 @@ public class ProductEditionPopup {
     
     private static class CheckableProduct{
         
-        private IProduct product;
+        private IReadOnlyProduct product;
         private BooleanProperty checked;
         
-        CheckableProduct(IProduct product){
+        CheckableProduct(IReadOnlyProduct product){
             this.product = product;
             this.checked = new SimpleBooleanProperty(false);
         }

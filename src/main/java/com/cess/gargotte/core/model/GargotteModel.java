@@ -3,7 +3,7 @@ package com.cess.gargotte.core.model;
 import com.cess.gargotte.core.model.listeners.IModelFirerer;
 import com.cess.gargotte.core.model.listeners.IModelListener;
 import com.cess.gargotte.core.model.listeners.ModelFirerer;
-import com.cess.gargotte.core.model.products.IProduct;
+import com.cess.gargotte.core.model.products.*;
 import com.cess.gargotte.core.model.sales.Order;
 import com.cess.gargotte.core.model.sales.PaymentMethod;
 import com.cess.gargotte.core.model.sales.ProductBuffer;
@@ -53,15 +53,18 @@ public class GargotteModel implements IModel{
         products = ioHandler.read();
     }
 
-    //TODO Modifier le retour pour renvoyer des produits "read-only"
-    public List<IProduct> getProducts() {
-        return products;
+    public List<IReadOnlyProduct> getProducts() {
+        List<IReadOnlyProduct> reply = new ArrayList<>();
+        for(IProduct product : products){
+            reply.add(this.toReadOnlyProduct(product));
+        }
+        return reply;
     }
 
-    public List<IProduct> getProductsFromCat(final String cat){
-        final List<IProduct> reply = new ArrayList<>( );
+    public List<IReadOnlyProduct> getProductsFromCat(final String cat){
+        final List<IReadOnlyProduct> reply = new ArrayList<>( );
         if(cat!=null ) {
-            this.products.stream( ).filter((product) -> product.getCat( ).equals(cat)).forEach((product) -> reply.add(product));
+            this.products.stream( ).filter((product) -> product.getCat( ).equals(cat)).forEach((product) -> reply.add(this.toReadOnlyProduct(product)));
         }
         return reply;
     }
@@ -80,7 +83,7 @@ public class GargotteModel implements IModel{
         return reply;
     }
 
-    public boolean bufferSale(IProduct product){
+    public boolean bufferSale(IReadOnlyProduct product){
         boolean reply = productBuffer.addProduct(product);
         if(reply){
             this.dataEventFirerer.fireDataChangedEvent();
@@ -88,7 +91,7 @@ public class GargotteModel implements IModel{
         return reply;
     }
 
-    public boolean unbufferSale(IProduct product){
+    public boolean unbufferSale(IReadOnlyProduct product){
         boolean reply = productBuffer.removeProduct(product);
         if(reply){
             this.dataEventFirerer.fireDataChangedEvent();
@@ -120,7 +123,9 @@ public class GargotteModel implements IModel{
     private void apply(Order order){
         try {
             for (Sale sale : order.getSales()) {
-                this.products.get(this.products.indexOf(sale.getProduct())).applySale(sale.getAmount());
+                this.products.stream()
+                             .filter(product->toReadOnlyProduct(product).isSameProduct(sale.getProduct()))
+                             .forEach(product->product.applySale(sale.getAmount()));
             }
         }catch(IllegalStateException e){
             //En cas d'erreur, on regénère la liste des produits à partir du fichier de sauvegarde.
@@ -151,42 +156,47 @@ public class GargotteModel implements IModel{
         return paymentMethod;
     }
     
+    private void applyChanges(){
+        this.ioHandler.write(this.products);
+        this.dataEventFirerer.fireDataChangedEvent();
+    }
+    
     @Override
-    public void replaceProduct (IProduct toReplace, IProduct with) {
+    public void replaceProduct (IReadOnlyProduct toReplace, IReadOnlyProduct with) {
+        IProduct toReplaceEditable = toEditableProduct(toReplace);
+        IProduct withEditable = toEditableProduct(with);
+        int index = 0;
         for(IProduct product : new ArrayList<>(this.products)){
-            if(product.isSameProduct(toReplace)){
-                int index = this.products.indexOf(toReplace);
-                this.products.remove(toReplace);
-                this.products.add(index, with);
-            }else if(product.isComposedOf(toReplace)){
-                product.replaceComponent(toReplace, with);
+            if(product.isSameProduct(toReplaceEditable)){
+                this.products.remove(toReplaceEditable);
+                this.products.add(index, withEditable);
+            }else if(product.isComposedOf(toReplaceEditable)){
+                product.replaceComponent(toReplaceEditable, withEditable);
             }
+            index++;
         }
         
-        this.ioHandler.write(this.products);
-        this.dataEventFirerer.fireDataChangedEvent();
+        applyChanges();
     }
     
     @Override
-    public void addProduct (IProduct toAdd) {
-        this.products.add(toAdd);
+    public void addProduct (IReadOnlyProduct toAdd) {
+        this.products.add(this.toEditableProduct(toAdd));
         
-        this.ioHandler.write(this.products);
-        this.dataEventFirerer.fireDataChangedEvent();
+        applyChanges();
     }
     
     @Override
-    public void removeProduct (IProduct toRemove) {
+    public void removeProduct (IReadOnlyProduct toRemove) {
         for(IProduct product : new ArrayList<>(this.products)){
-            if(product.isSameProduct(toRemove)){
+            if(toRemove.isSameProduct(this.toReadOnlyProduct(product))){
                 this.products.remove(product);
-            }else if(product.isComposedOf(toRemove)){
-                product.removeComponent(toRemove);
+            }else if(toRemove.isComposedOf(this.toReadOnlyProduct(product))){
+                product.removeComponent(this.toEditableProduct(toRemove));
             }
         }
-        
-        this.ioHandler.write(this.products);
-        this.dataEventFirerer.fireDataChangedEvent();
+    
+        applyChanges();
     }
     
     @Override
@@ -197,5 +207,40 @@ public class GargotteModel implements IModel{
     @Override
     public Path getOrderLogFilePath () {
         return SALES_LOG_FILE_PATH;
+    }
+    
+    private IProduct toEditableProduct(IReadOnlyProduct roProduct){
+        //TODO à refaire pour permettre aux nouveaux produits d'êtres ajoutés
+        if(roProduct!=null) {
+            for (IProduct product : this.products) {
+                if (roProduct.getName().equals(product.getName())
+                    && roProduct.getCat().equals(product.getCat())
+                    && roProduct.getPrice() == product.getPrice()) {
+                    return product;
+                }
+            }
+        }
+        return null;
+    }
+    
+    private IReadOnlyProduct toReadOnlyProduct(IProduct product){
+        if(product!=null) {
+            if (product.getClass().equals(SimpleProduct.class)) {
+                return new SimpleReadOnlyProduct(product.getName(), product.getCat(), product.getPrice(),
+                                                 product.getAmountRemaining(), product.getAmountSold());
+            } else if (product.getClass().equals(ComposedProduct.class)) {
+                List<IReadOnlyProduct> components = new ArrayList<>();
+                for (IProduct component : ((ComposedProduct) product).getComponents()) {
+                    components.add(toReadOnlyProduct(component));
+                }
+                return new ComposedReadOnlyProduct(product.getName(), product.getCat(), product.getPrice(),
+                                                   product.getAmountSold(), components);
+            } else {
+                throw new IllegalStateException("Type de produit inconnu : " + product.getClass().toString());
+            }
+        }else{
+            System.out.println("product null");
+            return null;
+        }
     }
 }

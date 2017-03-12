@@ -1,7 +1,8 @@
 package com.cess.gargotte.core.order_logging.factory;
 
-import com.cess.gargotte.core.model.products.IProduct;
+import com.cess.gargotte.core.model.products.IReadOnlyProduct;
 import com.cess.gargotte.core.model.products.SimpleProduct;
+import com.cess.gargotte.core.model.products.SimpleReadOnlyProduct;
 import com.cess.gargotte.core.model.sales.Order;
 import com.cess.gargotte.core.model.sales.PaymentMethod;
 import com.cess.gargotte.core.model.sales.Sale;
@@ -46,8 +47,8 @@ public class SimpleIOLogFactory implements IIOLogFactory{
             if(parts.length!=3)
                 throw new IllegalArgumentException("Chaine <"+str+"> détectée comme invalide (Nombre de composants invalides)");
             
-            IProduct product = null;
-            for(IProduct currProduct : products){
+            IReadOnlyProduct product = null;
+            for(IReadOnlyProduct currProduct : products){
                 if(currProduct.getName().equals(parts[0]))
                     product = currProduct;
             }
@@ -91,7 +92,7 @@ public class SimpleIOLogFactory implements IIOLogFactory{
                 try {
                     sales.add(saleReader.read(parts[i], products));
                 } catch (UnknownProductException e) {
-                    sales.add(new Sale(new SimpleProduct("PRODUIT INCONNU", "NONE", 0,0,0), 0));
+                    sales.add(new Sale(new SimpleReadOnlyProduct("PRODUIT INCONNU", "NONE", 0, 0, 0), 0));
                 }
             }
             

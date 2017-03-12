@@ -1,6 +1,6 @@
 package com.cess.gargotte.core.order_logging.factory.log;
 
-import com.cess.gargotte.core.model.products.IProduct;
+import com.cess.gargotte.core.model.products.IReadOnlyProduct;
 import com.cess.gargotte.core.model.sales.Order;
 
 import java.util.List;
@@ -10,5 +10,5 @@ import java.util.List;
  */
 public interface IOrderLogReader {
     
-    Order read(String str, ISaleLogReader saleReader, List<IProduct> products);
+    Order read(String str, ISaleLogReader saleReader, List<IReadOnlyProduct> products);
 }
