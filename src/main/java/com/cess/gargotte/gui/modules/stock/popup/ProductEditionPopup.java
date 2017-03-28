@@ -146,20 +146,54 @@ public class ProductEditionPopup {
         
         Node okButton = dialog.getDialogPane().lookupButton(okButtonType);
         okButton.addEventFilter(ActionEvent.ACTION, event->{
+            String errMsg = "";
             if((nameTextField.getText().isEmpty()
                          || priceTextField.getText().isEmpty()
                          || catComboBox.getValue().isEmpty()
                          || amountRemainingTextField.getText().isEmpty()
-                         || amountSoldTextField.getText().isEmpty())){
+                         || amountSoldTextField.getText().isEmpty())) {
+
+                errMsg = "Vous devez remplir tous les champs.\n";
+            }
+
+            if(!nameTextField.getText().isEmpty() && !isString(nameTextField.getText())){
+                errMsg = errMsg + "Le nom ne doit contenir que des lettres\n";
+            }
+            if(!catComboBox.getValue().isEmpty() && !isString(catComboBox.getValue().toString())){
+                errMsg = errMsg + "La catégorie ne doit contenir que des lettres\n";
+            }
+
+            if(!priceTextField.getText().isEmpty() && !isNumber(priceTextField.getText())){
+                errMsg = errMsg + "Le prix doit être un nombre\n";
+            }
+
+            if(!amountRemainingTextField.getText().isEmpty() && !isNumber(amountRemainingTextField.getText())){
+                errMsg = errMsg + "La quantité restante doit être un nombre\n";
+            }
+            if(!amountSoldTextField.getText().isEmpty() && !isNumber(amountSoldTextField.getText())){
+                errMsg = errMsg + "La quantité vendue doit être un nombre\n";
+            }
+
+            if(!amountRemainingTextField.getText().isEmpty() && !amountSoldTextField.getText().isEmpty()){
+                int sold = Integer.parseInt(amountSoldTextField.getText());
+                int remain = Integer.parseInt(amountRemainingTextField.getText());
+
+                if(sold>remain){
+                    errMsg = errMsg + "La quantité vendue ne peut pas être supérieur à la quantité restante";
+                }
+            }
+
+            if(errMsg.length()!=0){
                 event.consume();
                 
-                Alert alert = new Alert(Alert.AlertType.ERROR, "Vous devez remplir tous les champs.");
+                Alert alert = new Alert(Alert.AlertType.ERROR, errMsg);
                 alert.initModality(Modality.APPLICATION_MODAL);
                 alert.setTitle("Erreur");
                 alert.showAndWait();
             }
         });
-        
+
+
         dialog.setResultConverter(dialogButton -> {
             if(dialogButton.equals(okButtonType)){
                 List<IProduct> components = new ArrayList<>();
@@ -205,7 +239,21 @@ public class ProductEditionPopup {
         }
         return reply;
     }
-    
+
+    private static boolean isString(String str){
+        for (Character c : str.toCharArray()){
+            int ascii = (int) c;
+            if(!(ascii>=65 && ascii<=90)&&!(ascii>=97 && ascii <=122) && ascii!=32){
+                return false;
+            }
+        }
+        return true;
+    }
+
+    private static boolean isNumber(String str){
+        return str.matches("-?\\d+(\\.\\d+)?");
+    }
+
     private static class CheckableProduct{
         
         private IProduct product;
